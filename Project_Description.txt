@@ -1,0 +1,17 @@
+Project #2- Voiced/Unvoiced phonemes detection
+
+Description:
+
+This project aims to discriminate between voiced and unvoiced phonemes using short-time
+speech parameters, such as short-time ZCR and short-time amplitude. The values of the thresholds of
+these parameters, used to discriminate voiced and unvoiced parts can be chosen by experience, or through
+training a neural network based on the speech parameters and their statistics (mean and variance). In
+particular, this training can be achieved on different speakers of different gender (male and female) in
+order to make the neural network learn different instances of speech parameters. The final code can be
+presented with a graphical user interface.
+
+
+Keywords:
+
+Voiced/unvoiced phoneme detection, short-time speech analysis, short-time ZCR, short-time
+amplitude, neural networks, statistics (mean and variance).
