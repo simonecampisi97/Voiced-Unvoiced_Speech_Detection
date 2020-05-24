@@ -6,6 +6,7 @@ import wave, struct
 from scipy.signal import get_window
 from scipy.io import wavfile
 import soundfile as sf
+import matplotlib.pyplot as plt
 
 import numpy as np
 
@@ -19,7 +20,8 @@ def split_audio():
 # y -> signal
 def st_zcr(y, fs, duration=30, overlap_rate=0.5, window='hann'):
     # Analysis frame length (in samples)
-    frame_length = np.floor(duration * fs / 1000)
+    frame_length = int(np.floor(duration * fs / 1000))
+    frame_time = []
     st_zcr_ = []
     shift = 1 - overlap_rate
     # shift length in samples -> hop_length
@@ -28,10 +30,26 @@ def st_zcr(y, fs, duration=30, overlap_rate=0.5, window='hann'):
     frames = frame(y, frame_length=frame_length, hop_length=frame_shift, axis=0)
     window = get_window(window=window, Nx=frame_length, fftbins=False)
     windowed_frame = np.multiply(frames, window)
+
+    frame_nb = round(len(y) - frame_length)/frame_shift
+
+    #Ts = 1 / fs
+    #k = 0
     for frame_w in windowed_frame:
-        st_zcr_.append(zero_crossing_rate(y=frame_w, frame_length=frame_length, hop_length=frame_shift))
+        #frame_time.append((k*(frame_shift+1))*Ts*1000)
+        st_zcr_.append(np.sum(abs(np.diff(np.sign(frame_w-np.mean(frame_w)))))/(2*frame_length))
+        #k += 1
+
+    #plt.plot(frame_time[:200], st_zcr_[:200])
+    #print(len(st_zcr_))
+    plt.show()
+
     return st_zcr_
 
+
+#y, fs = librosa.load(librosa.util.example_audio_file())
+
+#zcr = st_zcr(y=y, fs=fs)
 
 
 
