@@ -5,6 +5,8 @@ import soundfile as sf
 
 import numpy as np
 
+def split_audio():
+    pass
 
 def ZRC():
     pass
