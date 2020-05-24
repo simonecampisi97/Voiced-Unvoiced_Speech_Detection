@@ -23,3 +23,10 @@ def EMFCC():
 def pitch():
     pass
 
+#level-crossing rate
+def LCR():
+    pass
+
+def EGG_to_DEGG():
+    pass
+
