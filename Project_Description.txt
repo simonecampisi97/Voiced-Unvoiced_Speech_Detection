@@ -20,3 +20,6 @@ Parametri da calcolare:
 -short-time ZCR
 -short-time amplitude
 -
+
+Link utili:
+-https://stackoverflow.com/questions/2060628/reading-wav-files-in-python (librerie gestione audio)
