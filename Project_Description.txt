@@ -15,3 +15,8 @@ Keywords:
 
 Voiced/unvoiced phoneme detection, short-time speech analysis, short-time ZCR, short-time
 amplitude, neural networks, statistics (mean and variance).
+
+Parametri da calcolare:
+-short-time ZCR
+-short-time amplitude
+-
