@@ -15,7 +15,6 @@ import numpy as np
 # fs -> sampling frequency
 # y -> signal
 def st_zcr(frames_windowed, frame_length):
-
     st_zcr_ = []
     # matrix where the rows contains contiguous slice
     for frame_w in frames_windowed:
@@ -27,10 +26,11 @@ def st_zcr(frames_windowed, frame_length):
 
 fs, y = wavfile.read('lar_F02_sa1.wav')
 
-frames = Frames.Frames(y=y, fs=fs)
+
+frames = Frames.Frames(y=y, fs=fs, gender='female')
 
 
-
+def ceptrum(frames):
 
 def amplitude():
     pass
