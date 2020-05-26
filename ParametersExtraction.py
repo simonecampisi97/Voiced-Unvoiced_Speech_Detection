@@ -29,7 +29,8 @@ def st_zcr(Frames):
     return st_zcr_
 
 
-def vuv_ceptrum(Frames, f0min=50, f0max=500, threshold=0.05):
+def vuv_ceptrum(Frames, f0max=500, threshold=0.05):
+
     """
     :param Frames: Frames Object
     :param f0min: minimum f0 value
