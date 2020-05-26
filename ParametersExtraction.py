@@ -25,12 +25,14 @@ def st_zcr(frames_windowed, frame_length):
     return st_zcr_
 
 
-def vuv_ceptrum(Frames, f0min=50, f0max=500, threshold=0.1):
+def vuv_ceptrum(Frames, f0min=50, f0max=500, threshold=0.05):
     index_f0min = round(fs / f0min)  # Index of f0 min
     index_f0max = round(fs / f0max)  # Index of f0 max
     nfft = int(2 ** nextpow2(Frames.frame_length))
     f0_ = np.zeros(len(Frames.frames))
     vuv_cep = np.zeros(len(Frames.frames))
+    # to plot
+    f0_time = np.zeros(len(Frames.frames))
 
     for i, frame in enumerate(Frames.frames):
 
@@ -46,27 +48,31 @@ def vuv_ceptrum(Frames, f0min=50, f0max=500, threshold=0.1):
         cep = cep_shift[index_cep_shift >= 0]  # The part of the centred cepstrum located in the postive quefrencies
 
         # Search for the local maximum of the cepstrum located beyond indf0max
-        cep_max = np.amax(cep[index_f0max: len(cep)-1])
-        ind_cep_max = np.argmax(cep[index_f0max: len(cep)-1])
+        cep_max = np.amax(cep[index_f0max: len(cep) - 1])
+        ind_cep_max = np.argmax(cep[index_f0max: len(cep) - 1])
         # print(ind_cep_max)
         f0_[i] = Frames.fs / (index_f0max + ind_cep_max)  # potential f0 value
-
+        f0_time[i] = (i * Frames.shift_length + 1) * (1000 / fs)
         if cep_max > threshold:
             vuv_cep[i] = 1
         else:
             vuv_cep[i] = 0
         f0_[i] = f0_[i] * vuv_cep[i]  # final f0
+    # plot signal
+    # plt.plot(np.arange(len(Frames.y)), Frames.y)
+    # plt.plot(f0_time[:30],f0_[:30])
+    plt.show()
     return f0_
 
 
-fs, y = wavfile.read('FSA1.WAV')
+fs, y = wavfile.read('lar_F02_sa1.wav')
 
 frames = Frames.Frames(y=y, fs=fs, gender='female')
 
 f0 = vuv_ceptrum(Frames=frames)
 
-
 print(f0)
+print(len(frames.frames))
 
 
 def amplitude():

@@ -26,10 +26,10 @@ class Frames:
         self.frame_length = int(duration * (fs / 1000))  # Analysis frame length (in samples)
         # hop_length -> librosa
 
-        shift_length = int(float(hop_size) * (fs / 1000))
+        self.shift_length = int(float(hop_size) * (fs / 1000))
         # matrix where the rows contains contiguous slice
 
-        self.frames = frame(y, frame_length=self.frame_length, hop_length=shift_length, axis=0)
+        self.frames = frame(y, frame_length=self.frame_length, hop_length=self.shift_length, axis=0)
         print('Frames', self.frames.shape[0])
         window = kaiser(M=self.frame_length, beta=0.5)  # get_window(window=window, Nx=self.frame_length, fftbins=False)
         self.windowed_frame = np.multiply(self.frames, window)
@@ -37,7 +37,7 @@ class Frames:
         # pitch = pysptk.swipe(x=y.astype(np.float64), fs=fs, hopsize=shift_length)
         nfft = 2 ** nextpow2(self.frame_length)
         S = np.array(frame_dft(self.frames, int(nfft)))
-        pitches, _ = librosa.core.piptrack(y=y, sr=fs, S=S, n_fft=int(nfft), window='hann', hop_length=shift_length)
+        pitches, _ = librosa.core.piptrack(y=y, sr=fs, S=S, n_fft=int(nfft), window='hann', hop_length=self.shift_length)
         # vuv = np.where()
         file = open('pitches.txt', mode='w')
         vuv = []
