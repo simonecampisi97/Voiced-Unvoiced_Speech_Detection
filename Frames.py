@@ -30,9 +30,16 @@ class Frames:
         # matrix where the rows contains contiguous slice
 
         self.frames = frame(y, frame_length=self.frame_length, hop_length=self.shift_length, axis=0)
-
         window = kaiser(M=self.frame_length, beta=0.5)  # get_window(window=window, Nx=self.frame_length, fftbins=False)
         self.windowed_frames = np.multiply(self.frames, window)
+
+        # cutoff
+        if gender == 'female':
+            self.y = butter_highpass_filter(data=self.y, cutoff=25, fs=self.fs)
+        elif gender == 'male':
+            self.y = butter_highpass_filter(data=self.y, cutoff=15, fs=self.fs)
+        else:
+            raise Exception('Gender must be female or male')
 
     def __iter__(self):
         return self.windowed_frames
