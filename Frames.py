@@ -45,9 +45,6 @@ class Frames:
         for pitch in pitches:
             vuv.append(np.sum(pitch))
             file.write(str(np.sum(pitch))+'\n')
-        vuv= np.array(vuv)
-        print(vuv)
-        print(vuv[581])
         file.close()
 
     def __iter__(self):
