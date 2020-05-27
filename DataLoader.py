@@ -13,6 +13,13 @@ def label_extraction(file_name):
     return voicing
 
 
+def features_extraction(rate, data):
+    feature = []
+    # TODO add feature extraction
+
+    return np.array(feature)
+
+
 class DataLoader(datasets.VisionDataset):
 
     def __init__(self, root):
@@ -72,6 +79,7 @@ class DataLoader(datasets.VisionDataset):
         return self.file_per_gender[idx]
 
     def __getitem__(self, index):
+        # Retrieve the position of the file from the index
         gender_idx = 0 if index < self.item_per_gender("FEMALE") else 1
         index = index if gender_idx == 0 else index - self.item_per_gender(self.genders[gender_idx])
         speaker_idx = int(index / (self.file_per_gender[gender_idx] / self.speaker_per_gender[gender_idx]))
@@ -79,11 +87,15 @@ class DataLoader(datasets.VisionDataset):
 
         file_name = self.file_names[gender_idx, speaker_idx, audio_id]
 
+        # Build the path of the file required and the label associated
         wav_path = self.get_mic_path(file_name, gender_idx, speaker_idx)
         label_path = self.get_ref_path(file_name, gender_idx, speaker_idx)
 
+        # Load and process the data
         fs, x = wavfile.read(wav_path)
         y = label_extraction(label_path)
+
+        features = features_extraction(rate=fs, data=x)
 
         # test
         print("{}  pos:({}, {}, {})".format(file_name, gender_idx, speaker_idx, audio_id))
@@ -91,10 +103,6 @@ class DataLoader(datasets.VisionDataset):
         print(label_path, " -  Frame_num:", len(y))
         print()
         # end test
-
-        # FEATURES EXTRACTION
-        features = []
-        # TODO aggiungere il parametro di ritorno(le feature)
 
         return features, y
 
