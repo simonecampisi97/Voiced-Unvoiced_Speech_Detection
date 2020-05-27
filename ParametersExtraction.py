@@ -36,16 +36,6 @@ fs, y = wavfile.read('lar_F02_sa1.wav')
 
 frames = Frames.Frames(y=y, fs=fs, gender='female')
 
-text = open('ref_F02_sa1.f0', 'r')
-line = text.readline()
-f0_text = []
-while line:
-    str = line.strip()
-    f0_text.append(float(str.split(" ")[0]))
-    line = text.readline()
-text.close()
-
-
 def amplitude():
     pass
 

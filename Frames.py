@@ -33,7 +33,7 @@ class Frames:
         window = kaiser(M=self.frame_length, beta=0.5)  # get_window(window=window, Nx=self.frame_length, fftbins=False)
         self.windowed_frames = np.multiply(self.frames, window)
 
-        # cutoff
+        # cutoff frequency
         if gender == 'female':
             self.y = butter_highpass_filter(data=self.y, cutoff=25, fs=self.fs)
         elif gender == 'male':
