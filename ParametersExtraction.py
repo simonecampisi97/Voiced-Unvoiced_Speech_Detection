@@ -49,9 +49,11 @@ def st_energy(Frames):
 
 
 def st_HNR(Frames, time_step=0.01, silence_threshold=0.1):
+
     hnr = []
     for frame in Frames.windowed_frames:
         hnr.append(get_HNR(signal=frame, rate=Frames.fs, time_step=time_step, silence_threshold=silence_threshold))
+
     return hnr
 
 
