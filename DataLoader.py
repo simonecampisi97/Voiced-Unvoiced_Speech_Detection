@@ -91,6 +91,7 @@ class DataLoader(datasets.VisionDataset):
         print()
         # end test
 
+        # TODO aggiungere il parametro di ritorno(le feature)
         return 0
 
     def get_ref_path(self, file_name, gender_idx, speaker_idx):
