@@ -1,17 +1,10 @@
 import tkinter as tk
+from frontend.Widget.Window import Window
 
-window_root = tk.Tk()
 
-window_root.geometry("800x600")
-window_root.title('Voiced/Unvoiced-speech detection')
-window_root.resizable(False, False)
-
-label = tk.Label(window_root, text="label1")
 
 button = tk.Button(text='Push to get your chash')
 button.place(x=300, y=5)
 # label.pack()
-
-
-
+window_root = Window(title='VOICED/UNVOICED DETECTION', geometry='600x800',resizable=(False,False))
 window_root.mainloop()
