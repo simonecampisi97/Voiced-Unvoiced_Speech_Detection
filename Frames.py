@@ -11,6 +11,7 @@ import io
 
 class Frames:
     def __init__(self, y, fs, gender, duration=32, hop_size=10):
+
         """
         :param hop_size: default: 10 ms
         :param y: audio time series
@@ -18,6 +19,7 @@ class Frames:
         :param duration: Analysis frame duration (in msec)
         :param overlap_rate: Overlapping rate between successive frame (typically between 50% and 100%)
         """
+
         self.fs = fs
         self.y = y
         self.freq_female = 25  # Hz

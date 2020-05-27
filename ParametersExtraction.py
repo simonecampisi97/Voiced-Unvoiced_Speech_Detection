@@ -32,6 +32,7 @@ def st_zcr(Frames):
     return st_zcr_
 
 
+
 fs, y = wavfile.read('lar_F02_sa1.wav')
 
 frames = Frames.Frames(y=y, fs=fs, gender='female')
