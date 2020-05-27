@@ -6,10 +6,11 @@ from torchvision import datasets
 
 
 def label_extraction(file_name):
-    pitch = []
     with open(file_name) as f:
-        pitch = [line.rstrip().split(" ")[0] for line in f]
-    return pitch
+        voicing = [int(line.rstrip().split(" ")[1]) for line in f]
+    voicing = np.array(voicing)
+
+    return voicing
 
 
 class DataLoader(datasets.VisionDataset):
@@ -91,8 +92,11 @@ class DataLoader(datasets.VisionDataset):
         print()
         # end test
 
+        # FEATURES EXTRACTION
+        features = []
         # TODO aggiungere il parametro di ritorno(le feature)
-        return 0
+
+        return features, y
 
     def get_ref_path(self, file_name, gender_idx, speaker_idx):
         return os.path.join(self.root,
