@@ -15,7 +15,6 @@ def st_zcr(Frames):
 
     return np.array(st_zcr_)
 
-
 fs, y = wavfile.read('lar_F02_sa1.wav')
 
 frames = Frames(y=y, fs=fs, gender='female')
@@ -43,6 +42,7 @@ def st_energy(Frames):
     return energy
 
 
+
 plot_result(Frames=frames, y=st_energy(frames), title='st_energy')
 
 
@@ -53,6 +53,5 @@ def st_HNR(Frames, time_step=0.01, silence_threshold=0.1):
             get_HNR(signal=windowed_frame, rate=Frames.fs, time_step=time_step, silence_threshold=silence_threshold))
 
     return np.array(hnr)
-
 
 plot_result(Frames=frames, y=st_HNR(frames), title='st_HNR')

@@ -9,7 +9,7 @@ window_root.resizable(False, False)
 label = tk.Label(window_root, text="label1")
 
 button = tk.Button(text='Push to get your chash')
-button.place(x=300, y=0)
+button.place(x=300, y=5)
 # label.pack()
 
 
