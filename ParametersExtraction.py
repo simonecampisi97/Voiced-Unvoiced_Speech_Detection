@@ -32,10 +32,10 @@ def st_zcr(Frames):
     return st_zcr_
 
 
-
 fs, y = wavfile.read('lar_F02_sa1.wav')
 
 frames = Frames.Frames(y=y, fs=fs, gender='female')
+
 
 def amplitude():
     pass
@@ -50,12 +50,14 @@ def st_energy(Frames):
 
 
 def st_HNR(Frames, time_step=0.01, silence_threshold=0.1):
-
     hnr = []
     for frame in Frames.windowed_frames:
         hnr.append(get_HNR(signal=frame, rate=Frames.fs, time_step=time_step, silence_threshold=silence_threshold))
 
     return hnr
+
+
+plt.plot(st_HNR(frames))
 
 
 # level-crossing rate
