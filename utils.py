@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import signal
+import matplotlib.pyplot as plt
 
 
 def nextpow2(x):
@@ -13,14 +14,11 @@ def frame_dft(frames, nfft):
     return S
 
 
-def butter_highpass(cutoff, fs, order=5):
-    nyq = 0.5 * fs
-    normal_cutoff = cutoff / nyq
-    b, a = signal.butter(order, normal_cutoff, btype='high', analog=False)
-    return b, a
-
-
-def butter_highpass_filter(data, cutoff, fs, order=5):
-    b, a = butter_highpass(cutoff, fs, order=order)
-    y = signal.filtfilt(b, a, data)
-    return y
+def plot_result(y, Frames, title=''):
+    frame_time = []
+    for i in range(len(Frames.frames)):
+        frame_time.append((i * Frames.frame_length) * (1 / Frames.fs) * 1000)
+    plt.figure()
+    plt.plot(frame_time, y)
+    plt.title(title)
+    plt.show()
