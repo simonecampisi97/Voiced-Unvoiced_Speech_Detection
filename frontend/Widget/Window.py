@@ -10,4 +10,6 @@ class Window(tk.Tk):
         self.geometry(geometry)
         self.resizable(resizable, resizable)
 
-        self.train_test_button = Button.Button(root_window=self, text='Train_Test', x=0, y=0)
+        self.train_test_button = Button.Button(root_window=self, text='Train/Test', x=0, y=0, height=10, width=25)
+
+        self.Graphics = Button.Button(root_window=self, text='Graphic Given \n a signal', x=170, y=0, height=10, width=25)
