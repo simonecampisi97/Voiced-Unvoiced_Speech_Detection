@@ -21,6 +21,7 @@ fs, y = wavfile.read('lar_F02_sa1.wav')
 frames = Frames(y=y, fs=fs, gender='female')
 
 
+
 def st_magnitude(Frames):
     st_mag = []
     i = 0
