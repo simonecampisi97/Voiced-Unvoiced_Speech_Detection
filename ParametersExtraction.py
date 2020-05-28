@@ -1,9 +1,10 @@
-from scipy.io import wavfile
-from Frames import Frames
-import numpy as np
-from utils import *
+import librosa
+import matplotlib.pyplot as plt
 from Signal_Analysis.features.signal import get_HNR
-import torch
+from scipy.io import wavfile
+
+import Frames
+from utils import *
 
 
 def st_zcr(Frames):
@@ -42,8 +43,24 @@ def st_energy(Frames):
     return energy
 
 
-plot_result(Frames=frames, y=st_energy(frames), title='st_energy')
+def st_HNR(Frames, time_step=0.01, silence_threshold=0.1):
+    hnr = []
+    for frame in Frames.windowed_frames:
+        hnr.append(get_HNR(signal=frame, rate=Frames.fs, time_step=time_step, silence_threshold=silence_threshold))
+    return hnr
 
+
+hnr = st_HNR(frames)
+plt.plot(hnr)
+plt.show()
+
+
+def MFCC(Frames, fs):
+    # TODO da sistemare
+    mfcc = []
+    for frame in Frames.windowed_frames:
+        t = librosa.feature.mfcc(frame, fs, n_mfcc=13)
+    return mfcc
 
 def st_HNR(Frames, time_step=0.01, silence_threshold=0.1):
     hnr = []
