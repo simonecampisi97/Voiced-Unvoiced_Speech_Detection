@@ -19,11 +19,14 @@ class Window(tk.Tk):
         self.configure(bg=BACK_GROUND_COLOR)
 
         # ------------TOOLBAR------------------
-        self.toolbar = None
+        self.toolbar_frame = None
         self.button_graphic = None
         self.button_graphics_img = tk.PhotoImage(file='frontend/Widget/icons/graphic.png')
         self.label_graphic = None
         self.button_tool2 = None
+
+        # --------------GRAPHIC FRAME --------------
+        self.graphic_frame = None
 
         # ----------Menu Bar-------------------------
 
@@ -55,21 +58,27 @@ class Window(tk.Tk):
         self.home_button.place(x=10, y=82)
 
     def show_frame_menu(self, event):
-        self.toolbar = Frame_.Frame(window_root=self, height=60, width=WIDTH_WINDOW - 54, x=51, y=0,
-                                    borderwidth=5, relief='groove')
-        self.toolbar.configure(highlightbackground="black", highlightcolor="black",
-                               highlightthickness=1, bg=BACK_GROUND_COLOR)
+        self.toolbar_frame = Frame_.Frame(window_root=self, height=60, width=WIDTH_WINDOW - 54, x=51, y=0,
+                                          borderwidth=5, relief='groove')
+        self.toolbar_frame.configure(highlightbackground="black", highlightcolor="black",
+                                     highlightthickness=1, bg=BACK_GROUND_COLOR)
 
-        self.button_graphic = Button.Button(root_window=self.toolbar, text='Test/Train',
-                                            image=self.button_graphics_img, height=25, width=25)
+        self.button_graphic = Button.Button(root_window=self.toolbar_frame, text='Test/Train',
+                                            image=self.button_graphics_img, height=25, width=25,
+                                            command=self.show_frame_graphics)
         self.button_graphic.configure(bg=BACK_GROUND_COLOR)
         self.button_graphic.place(x=55, y=5)
-        self.label_graphic = Label.Label(window_root=self.toolbar, text='Plot Parameters',
+        self.label_graphic = Label.Label(window_root=self.toolbar_frame, text='Plot Parameters',
                                          x=15, y=30, height=0, width=15)
         self.label_graphic.configure(bg=BACK_GROUND_COLOR)
 
     def show_frame_graphics(self):
-        pass
+        self.graphic_frame = Frame_.Frame(window_root=self, height=HEIGHT_WINDOW - 60, width=WIDTH_WINDOW - 54, x=51,
+                                          y=0,
+                                          borderwidth=5, relief='groove')
+        self.graphic_frame_frame.configure(highlightbackground="black", highlightcolor="black",
+                                           highlightthickness=1, bg=BACK_GROUND_COLOR)
+
 
     def destroy_(self, event):
-        self.toolbar.destroy()
+        self.toolbar_frame.destroy()
