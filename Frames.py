@@ -6,11 +6,10 @@ from scipy.signal.windows import kaiser
 class Frames:
     def __init__(self, y, fs, duration=32, hop_size=10):
         """
-        :param hop_size: default: 10 ms
+        :param hop_size: Number of steps to advance between frames (default: 10 ms)
         :param y: audio time series
         :param fs: sampling frequency (Number of samples per second)
         :param duration: Analysis frame duration (in msec)
-        :param overlap_rate: Overlapping rate between successive frame (typically between 50% and 100%)
         """
 
         self.frame_length = int(duration * (fs / 1000))  # Analysis frame length (in samples)
