@@ -9,7 +9,7 @@ from Frames import Frames
 
 def label_extraction(file_name):
     with open(file_name) as f:
-        voicing = [int(line.rstrip().split(" ")[1]) for line in f]
+        voicing = [line.rstrip().split(" ")[1] for line in f]
     voicing = np.array(voicing)
 
     return voicing
@@ -17,11 +17,7 @@ def label_extraction(file_name):
 
 def features_extraction(rate, data):
     frames = Frames(data, rate)
-    feature = []  # energy, ZCR, MFCC(13)
-    
-    feature.append( st_energy(frames) )
-    feature.append( st_magnitude(frames) )
-    feature.append( st_zcr(frames) )
+    feature = [st_energy(frames), st_magnitude(frames), st_zcr(frames)]  # energy, ZCR, MFCC(13)
 
     return np.array(feature).T
 
