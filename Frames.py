@@ -11,7 +11,7 @@ class Frames:
         :param duration: Analysis frame duration (in msec)
         :param hop_size: Number of steps to advance between frames (default: 10 ms)
         """
-
+        self.fs = fs
         self.frame_length = int(duration * (fs / 1000))  # Analysis frame length (in samples)
         # hop_length -> librosa
 

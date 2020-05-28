@@ -3,7 +3,7 @@ import os
 import numpy as np
 from scipy.io import wavfile
 from torchvision import datasets
-
+from ParametersExtraction import *
 from Frames import Frames
 
 
@@ -18,9 +18,12 @@ def label_extraction(file_name):
 def features_extraction(rate, data):
     frames = Frames(data, rate)
     feature = []  # energy, ZCR, MFCC(13)
-    # TODO add feature extraction
+    
+    feature.append( st_energy(frames) )
+    feature.append( st_magnitude(frames) )
+    feature.append( st_zcr(frames) )
 
-    return np.array(feature)
+    return np.array(feature).T
 
 
 class DataLoader(datasets.VisionDataset):

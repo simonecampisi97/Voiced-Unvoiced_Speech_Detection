@@ -17,11 +17,6 @@ def st_zcr(Frames):
     return np.array(st_zcr_)
 
 
-fs, y = wavfile.read('lar_F02_sa1.wav')
-
-frames = Frames(y=y, fs=fs, gender='female')
-
-
 def st_magnitude(Frames):
     st_mag = []
     i = 0
@@ -31,11 +26,6 @@ def st_magnitude(Frames):
     return np.array(st_mag)
 
 
-mag = st_magnitude(frames)
-
-plot_result(Frames=frames, y=mag, title='st_mag')
-
-
 def st_energy(Frames):
     energy = np.zeros(len(Frames.frames))
     for i, windowed_frame in enumerate(Frames.windowed_frames):
@@ -43,24 +33,13 @@ def st_energy(Frames):
     return energy
 
 
-def st_HNR(Frames, time_step=0.01, silence_threshold=0.1):
-    hnr = []
-    for frame in Frames.windowed_frames:
-        hnr.append(get_HNR(signal=frame, rate=Frames.fs, time_step=time_step, silence_threshold=silence_threshold))
-    return hnr
-
-
-hnr = st_HNR(frames)
-plt.plot(hnr)
-plt.show()
-
-
-def MFCC(Frames, fs):
+def MFCC(Frames):
     # TODO da sistemare
     mfcc = []
     for frame in Frames.windowed_frames:
-        t = librosa.feature.mfcc(frame, fs, n_mfcc=13)
+        t = librosa.feature.mfcc(frame, Frames.fs, n_mfcc=13)
     return mfcc
+
 
 def st_HNR(Frames, time_step=0.01, silence_threshold=0.1):
     hnr = []
@@ -69,6 +48,3 @@ def st_HNR(Frames, time_step=0.01, silence_threshold=0.1):
             get_HNR(signal=windowed_frame, rate=Frames.fs, time_step=time_step, silence_threshold=silence_threshold))
 
     return np.array(hnr)
-
-
-plot_result(Frames=frames, y=st_HNR(frames), title='st_HNR')
