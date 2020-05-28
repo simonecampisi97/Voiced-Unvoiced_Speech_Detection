@@ -14,7 +14,8 @@ class Window(tk.Tk):
         self.geometry(geometry)
         self.toolbar = None
         self.button_tool1 = None
-        self.button_tool1_img = tk.PhotoImage(file='frontend/Widget/icons/train.png')
+        self.button_tool1_img = tk.PhotoImage(file='frontend/Widget/icons/train.png')#.subsample(x=45, y=45)
+
         self.button_tool2 = None
 
         self.menu_img = tk.PhotoImage(file='frontend/Widget/icons/menu.png')
@@ -32,7 +33,7 @@ class Window(tk.Tk):
                                     borderwidth=3, relief='groove')
 
         self.button_tool1 = Button.Button(root_window=self.toolbar, text='Test/Train', image=self.button_tool1_img,
-                                          height=64,width=64)
+                                          height=67, width=67)
         self.button_tool1.place(x=50, y=2)
 
     def destroy_(self, event):
