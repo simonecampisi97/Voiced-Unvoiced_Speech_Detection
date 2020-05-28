@@ -4,6 +4,8 @@ import numpy as np
 from scipy.io import wavfile
 from torchvision import datasets
 
+from Frames import Frames
+
 
 def label_extraction(file_name):
     with open(file_name) as f:
@@ -14,7 +16,8 @@ def label_extraction(file_name):
 
 
 def features_extraction(rate, data):
-    feature = []
+    frames = Frames(data, rate)
+    feature = []  # energy, ZCR, MFCC(13)
     # TODO add feature extraction
 
     return np.array(feature)
@@ -46,27 +49,10 @@ class DataLoader(datasets.VisionDataset):
             gender_fileName = np.array(gender_fileName)
             self.file_names.append(gender_fileName)
 
-        # test
-        # print("Len file_names(2):", len(self.file_names))
-        # print("Type file_names[0]", type(self.file_names[0]))
-        # print("Type file_names[0][8]", type(self.file_names[0][8]))
-        # print("Shape file_names[0](10,236):", self.file_names[0].shape)
-        # print()
-        # end test
-
         self.file_names = np.array(self.file_names)
         self.file_per_gender = [self.file_names[idx].size for idx in range(len(self.genders))]
         self.speaker_per_gender = [self.file_names[idx].shape[0] for idx in range(len(self.genders))]
         self.file_per_speaker = self.file_names.shape[2]
-
-        # test
-        # print("File_name shape(2, 10, 234):", self.file_names.shape)
-        # print("File_name size(2680):", self.file_names.size)
-        # print("File per gender(2360):", self.file_per_gender)
-        # print("File per speaker(234):", self.file_per_speaker)
-        # print("Speaker per gender(10):", self.speaker_per_gender)
-        # print()
-        # end test
 
     def __len__(self):
         return self.total_number
@@ -96,13 +82,6 @@ class DataLoader(datasets.VisionDataset):
         y = label_extraction(label_path)
 
         features = features_extraction(rate=fs, data=x)
-
-        # test
-        print("{}  pos:({}, {}, {})".format(file_name, gender_idx, speaker_idx, audio_id))
-        print(wav_path, " -  SampleRate:", fs)
-        print(label_path, " -  Frame_num:", len(y))
-        print()
-        # end test
 
         return features, y
 
