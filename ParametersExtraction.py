@@ -1,16 +1,10 @@
 import librosa
-from librosa.feature import zero_crossing_rate
-from librosa.util import frame
-from librosa.util import example_audio_file
-import wave, struct
-from scipy.signal import get_window
-from scipy.io import wavfile
-import soundfile as sf
 import matplotlib.pyplot as plt
-import Frames
-import numpy as np
-from utils import *
 from Signal_Analysis.features.signal import get_HNR
+from scipy.io import wavfile
+
+import Frames
+from utils import *
 
 
 # duration -> msecs
@@ -68,9 +62,12 @@ plt.plot(hnr)
 plt.show()
 
 
-
-def MFCC(Fra):
-    pass
+def MFCC(Frames, fs):
+    # TODO da sistemare
+    mfcc = []
+    for frame in Frames.windowed_frames:
+        t = librosa.feature.mfcc(frame, fs, n_mfcc=13)
+    return mfcc
 
 
 # level-crossing rate
