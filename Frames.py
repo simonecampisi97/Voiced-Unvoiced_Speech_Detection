@@ -1,15 +1,10 @@
-import librosa
-from librosa.feature import zero_crossing_rate
-from librosa.util import frame
-from librosa.util import example_audio_file
-from scipy.signal import get_window, kaiser
-from utils import *
 import numpy as np
-import io
+from librosa.util import frame
+from scipy.signal.windows import kaiser
 
 
 class Frames:
-    def __init__(self, y, fs, gender, duration=32, hop_size=10):
+    def __init__(self, y, fs, duration=32, hop_size=10):
         """
         :param hop_size: default: 10 ms
         :param y: audio time series
@@ -17,11 +12,6 @@ class Frames:
         :param duration: Analysis frame duration (in msec)
         :param overlap_rate: Overlapping rate between successive frame (typically between 50% and 100%)
         """
-
-        self.fs = fs
-        self.y = y
-        self.freq_female = 25  # Hz
-        self.fre_male = 15  # Hz
 
         self.frame_length = int(duration * (fs / 1000))  # Analysis frame length (in samples)
         # hop_length -> librosa
@@ -35,3 +25,6 @@ class Frames:
 
     def __iter__(self):
         return self.windowed_frames
+
+    def __len__(self):
+        return len(self.windowed_frames)
