@@ -9,6 +9,7 @@ from Frames import Frames
 
 def label_extraction(file_name):
     with open(file_name) as f:
+        #TODO: cast string to int
         voicing = [line.rstrip().split(" ")[1] for line in f]
     voicing = np.array(voicing)
 
@@ -17,8 +18,7 @@ def label_extraction(file_name):
 
 def features_extraction(rate, data):
     frames = Frames(data, rate)
-    feature = [st_energy(frames), st_magnitude(frames), st_zcr(frames)]  # energy, ZCR, MFCC(13)
-
+    feature = [st_energy(frames), st_magnitude(frames), st_zcr(frames)]
     return np.array(feature).T
 
 
@@ -97,3 +97,4 @@ class DataLoader(datasets.VisionDataset):
                             "MIC",
                             self.genders[gender_idx][0] + "{:02d}".format(speaker_idx + 1),
                             file_name)
+
