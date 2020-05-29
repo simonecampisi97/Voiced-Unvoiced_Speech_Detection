@@ -17,6 +17,7 @@ class Window(tk.Tk):
         self.resizable(resizable, resizable)
         self.geometry(str(WIDTH_WINDOW) + 'x' + str(HEIGHT_WINDOW))
         self.configure(bg=BACK_GROUND_COLOR)
+        self.position = 0
 
         # ------------TOOLBAR------------------
         self.toolbar_frame = None
@@ -48,7 +49,7 @@ class Window(tk.Tk):
         self.back_img = tk.PhotoImage(file='frontend/Widget/icons/back.png')
         self.back_button = Button.Button(root_window=self.menu_frame, image=self.back_img, height=25, width=25)
         self.back_button.configure(bg=BACK_GROUND_COLOR)
-        self.back_button.bind('<Destroy>', self.destroy_)
+        self.back_button.bind('<Button-1>', self.go_back)
         self.back_button.place(x=10, y=46)
 
         # Home Button
@@ -56,6 +57,7 @@ class Window(tk.Tk):
         self.home_button = Button.Button(root_window=self.menu_frame, image=self.home_img, height=25, width=25)
         self.home_button.configure(bg=BACK_GROUND_COLOR)
         self.home_button.place(x=10, y=82)
+        self.home_button.bind('<Button-1>', self.home_page)
 
     def show_frame_menu(self, event):
         self.toolbar_frame = Frame_.Frame(window_root=self, height=60, width=WIDTH_WINDOW - 54, x=51, y=0,
@@ -73,12 +75,29 @@ class Window(tk.Tk):
         self.label_graphic.configure(bg=BACK_GROUND_COLOR)
 
     def show_frame_graphics(self):
-        self.graphic_frame = Frame_.Frame(window_root=self, height=HEIGHT_WINDOW - 60, width=WIDTH_WINDOW - 54, x=51,
-                                          y=0,
+        self.graphic_frame = Frame_.Frame(window_root=self, height=HEIGHT_WINDOW - 54, width=WIDTH_WINDOW - 54, x=51,
+                                          y=60,
                                           borderwidth=5, relief='groove')
-        self.graphic_frame_frame.configure(highlightbackground="black", highlightcolor="black",
-                                           highlightthickness=1, bg=BACK_GROUND_COLOR)
+        self.graphic_frame.configure(highlightbackground="black", highlightcolor="black",
+                                     highlightthickness=1, bg=BACK_GROUND_COLOR)
 
+    def changePage(self, change):
+        pages = [self.pageOne, self.pageTwo, self.pageThree]
+        new_position = self.position + change
+        if (new_position < 0) or (new_position <= len(pages)):
+            show_frame(BlankPage)
+            # not sure how you would handle the new position here
+        else:
+            pages[new_position].tkraise()
+            self.position = new_position
 
-    def destroy_(self, event):
-        self.toolbar_frame.destroy()
+    def go_back(self, event):
+        self.changePage(-1)
+
+    def go_next(self, event):
+        self.changePage(1)
+
+    def home_page(self, event):
+        if self.toolbar_frame is not None:
+            self.toolbar_frame.destroy()
+        self.graphic_frame.destroy()
