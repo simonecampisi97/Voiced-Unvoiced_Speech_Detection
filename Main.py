@@ -1,5 +1,5 @@
-from frontend.Widget.Window import Window
+from frontend.GUI import App
 
 if __name__ == '__main__':
-    root_Window = Window(title='Voiced/Unvoiced Speech Detection', resizable=False)
-    root_Window.mainloop()
+    app = App()
+    app.mainloop()
