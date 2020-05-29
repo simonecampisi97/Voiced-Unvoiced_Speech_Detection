@@ -16,11 +16,9 @@ def label_extraction(file_name):
 
 def features_extraction(rate, data):
     frames = Frames(data, rate)
-    feature = []  # energy, ZCR, MFCC(13)
-    
-    feature.append( st_energy(frames) )
-    feature.append( st_magnitude(frames) )
-    feature.append( st_zcr(frames) )
+    feature = [st_energy(frames),
+               st_magnitude(frames),
+               st_zcr(frames)]  # energy, ZCR, MFCC(13)
 
     return np.array(feature).T
 
