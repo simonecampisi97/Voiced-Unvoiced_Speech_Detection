@@ -1,10 +1,9 @@
 import os
 
-import numpy as np
-from scipy.io import wavfile
 from torchvision import datasets
-from ParametersExtraction import *
+
 from Frames import Frames
+from ParametersExtraction import *
 
 
 def label_extraction(file_name):
@@ -28,7 +27,8 @@ def features_extraction(rate, data):
 
 class DataLoader(datasets.VisionDataset):
 
-    def __init__(self, root):
+    def __init__(self, root, transforms):
+        self.transforms = transforms
         self.root = root
         self.genders = ['FEMALE', 'MALE']
 
@@ -86,7 +86,7 @@ class DataLoader(datasets.VisionDataset):
 
         features = features_extraction(rate=fs, data=x)
 
-        return features, y
+        return self.transforms(features), y
 
     def get_ref_path(self, file_name, gender_idx, speaker_idx):
         return os.path.join(self.root,
