@@ -5,7 +5,10 @@ import shutil
 import numpy as np
 
 
-def create_tree_directory(root, t="", val_size=0.33, data_dirs=[]):
+def create_tree_directory(root, t="", val_size=0.33, data_dirs=None):
+    if data_dirs is None:
+        data_dirs = []
+
     os.mkdir(os.path.join(root, "..", "train", t))
     os.mkdir(os.path.join(root, "..", "val", t))
 
