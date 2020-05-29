@@ -1,15 +1,14 @@
 import os
 
-import numpy as np
-from scipy.io import wavfile
 from torchvision import datasets
-from ParametersExtraction import *
+
 from Frames import Frames
+from ParametersExtraction import *
 
 
 def label_extraction(file_name):
     with open(file_name) as f:
-        voicing = [int(line.rstrip().split(" ")[1]) for line in f]
+        voicing = [(line.rstrip().split(" ")[1]) for line in f]
     voicing = np.array(voicing)
 
     return voicing
