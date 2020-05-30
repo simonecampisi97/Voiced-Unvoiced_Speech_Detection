@@ -6,7 +6,7 @@ from scipy.io import wavfile
 from torchvision import datasets
 
 from Frames import Frames
-from ParametersExtraction import st_energy, st_magnitude, st_zcr, MFCC
+from ParametersExtraction import st_energy, st_zcr, MFCC
 
 
 def label_extraction(file_name):
@@ -20,11 +20,10 @@ def label_extraction(file_name):
 def features_extraction(rate, data):
     frames = Frames(data, rate)
     feature = [st_energy(frames),
-               st_magnitude(frames),
+               # st_magnitude(frames),
                st_zcr(frames)]  # energy, ZCR, MFCC(13)
 
     _mfcc = MFCC(data, rate, frames.frame_length, frames.shift_length, frames.window)
-    print("Size mfcc:", np.array(_mfcc).shape)
 
     return np.array(feature).T
 

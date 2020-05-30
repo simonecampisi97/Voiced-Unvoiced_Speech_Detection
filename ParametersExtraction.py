@@ -1,6 +1,7 @@
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
+import python_speech_features
 from Signal_Analysis.features.signal import get_HNR
 
 from Frames import Frames
@@ -33,9 +34,28 @@ def st_energy(frames: Frames):
 
 
 def MFCC(signal, fs, frame_length, hop, window):
-    return librosa.feature.mfcc(signal, fs,
-                                n_mfcc=13,
-                                hop_length=hop, n_fft=frame_length, window=window)
+    n_mfcc = 13
+    n_mels = 40
+    n_fft = 512
+    hop_length = hop
+    fmin = 0
+    fmax = None
+
+    mfcc_librosa = librosa.feature.mfcc(y=signal, sr=fs, n_fft=frame_length,
+                                        n_mfcc=n_mfcc, n_mels=n_mels,
+                                        hop_length=hop_length,
+                                        fmin=fmin, fmax=fmax, htk=False)
+
+    mfcc_speech = python_speech_features.mfcc(signal=signal, samplerate=fs,
+                                              winlen=frame_length / fs, winstep=hop_length / fs,
+                                              numcep=n_mfcc, nfilt=n_mels, nfft=2048, lowfreq=fmin,
+                                              highfreq=fmax, preemph=0.0, ceplifter=0, appendEnergy=False)
+
+    print("shape mfcc(librosa):      ", np.array(mfcc_librosa).shape)
+    print("shape mfcc(speech_feature):", np.array(mfcc_speech).shape)
+    print()
+
+    return None
 
 
 def st_HNR(frames: Frames, time_step=0.01, silence_threshold=0.1):

@@ -1,6 +1,5 @@
 import numpy as np
 from librosa.util import frame
-from scipy.signal.windows import kaiser
 
 
 class Frames:
@@ -19,7 +18,7 @@ class Frames:
         # matrix where the rows contains contiguous slice
 
         frames = frame(y, frame_length=self.frame_length, hop_length=self.shift_length, axis=0)
-        self.window = kaiser(M=self.frame_length, beta=0.5)
+        self.window = np.kaiser(M=self.frame_length, beta=0.5)
         self.windowed_frames = np.multiply(frames, self.window)
 
     def __iter__(self):
