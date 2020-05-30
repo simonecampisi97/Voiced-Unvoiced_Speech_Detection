@@ -13,10 +13,10 @@ if __name__ == "__main__":
 
     feature, label = dl[0]
 
-    print(type(feature))
-    print((type(label)))
+    print("type feature", type(feature))
+    print("type labels", (type(label)))
 
-    print(feature.shape)
-    print(label.shape)
+    print("size feature", feature.shape)
+    print("size labels", label.shape)
 
     print(type(label[0]), label[0])
