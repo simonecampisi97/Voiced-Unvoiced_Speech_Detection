@@ -24,7 +24,7 @@ def features_extraction(rate, data):
                st_zcr(frames)]  # energy, ZCR, MFCC(13)
 
     _mfcc = MFCC(data, rate, frames.frame_length, frames.shift_length, frames.window)
-    print("size mfcc", np.array(_mfcc).shape)
+    print("Size mfcc:", np.array(_mfcc).shape)
 
     return np.array(feature).T
 
