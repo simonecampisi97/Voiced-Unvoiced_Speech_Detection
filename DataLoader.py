@@ -1,11 +1,12 @@
 import os
 
+import librosa
 import numpy as np
 from scipy.io import wavfile
 from torchvision import datasets
 
 from Frames import Frames
-from ParametersExtraction import st_energy, st_magnitude, st_zcr
+from ParametersExtraction import st_energy, st_magnitude, st_zcr, MFCC
 
 
 def label_extraction(file_name):
@@ -22,12 +23,17 @@ def features_extraction(rate, data):
                st_magnitude(frames),
                st_zcr(frames)]  # energy, ZCR, MFCC(13)
 
+    _mfcc = MFCC(data, rate, frames.frame_length, frames.shift_length, frames.window)
+    print(np.array(_mfcc).shape)
+
     return np.array(feature).T
 
 
 class DataLoader(datasets.VisionDataset):
 
     def __init__(self, root, transforms):
+        self.sample_rate = 48000
+
         self.transforms = transforms
         self.root = root
         self.genders = ['FEMALE', 'MALE']
@@ -82,6 +88,7 @@ class DataLoader(datasets.VisionDataset):
 
         # Load and process the data
         fs, x = wavfile.read(wav_path)
+        x, fs = librosa.core.load(wav_path, self.sample_rate)
         y = label_extraction(label_path)
 
         features = features_extraction(rate=fs, data=x)
