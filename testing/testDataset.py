@@ -1,11 +1,22 @@
+import torchvision.transforms as transforms
+
 from DataLoader import DataLoader
 
-
 if __name__ == "__main__":
+    #    dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED_CUSTOM\\SPEECH DATA"
+    dataset_dir = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
 
-    dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED_CUSTOM\\SPEECH DATA"
-    dl = DataLoader(dataset_dir)
+    transform = transforms.Compose(
+        [transforms.ToTensor()])
 
-    for i in range(len(dl)):
-        print(i)
-        tmp = dl[i]
+    dl = DataLoader(dataset_dir, transform)
+
+    feature, label = dl[0]
+
+    print(type(feature))
+    print((type(label)))
+
+    print(feature.shape)
+    print(label.shape)
+
+    print(type(label[0]), label[0])

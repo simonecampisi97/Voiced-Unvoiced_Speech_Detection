@@ -8,8 +8,7 @@ from DataLoader import DataLoader
 
 def load_data(data_dir):
     transform = transforms.Compose(
-        [transforms.ToTensor(),
-         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+        [transforms.ToTensor()])
 
     image_datasets = {x: DataLoader(os.path.join(data_dir, x), transform[x])
                       for x in ['train', 'val']}

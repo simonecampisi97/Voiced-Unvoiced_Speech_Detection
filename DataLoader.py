@@ -1,15 +1,17 @@
 import os
 
+import numpy as np
+from scipy.io import wavfile
 from torchvision import datasets
 
 from Frames import Frames
-from ParametersExtraction import *
+from ParametersExtraction import st_energy, st_magnitude, st_zcr
 
 
 def label_extraction(file_name):
     with open(file_name) as f:
-        voicing = [int(line.rstrip().split(" ")[1]) for line in f]
-    voicing = np.array(voicing)
+        voicing = [(line.rstrip().split(" ")[1]) for line in f]
+    voicing = np.array(voicing).astype(np.float32)
 
     return voicing
 

@@ -1,9 +1,7 @@
 import librosa
 import matplotlib.pyplot as plt
+import numpy as np
 from Signal_Analysis.features.signal import get_HNR
-from scipy.io import wavfile
-
-from utils import *
 
 
 def st_zcr(frames):
@@ -36,7 +34,7 @@ def MFCC(frames):
     # TODO da sistemare
     mfcc = []
     for frame in frames.windowed_frames:
-        t = librosa.feature.mfcc(frame, frames.fs, n_mfcc=13)
+        t = librosa.feature.mfcc(frame, frames.fs, n_mfcc=13, hop_lenth=0, n_fft=0)
     return mfcc
 
 
