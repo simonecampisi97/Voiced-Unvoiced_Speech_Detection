@@ -3,6 +3,7 @@ from tkinter import font as tkfont
 from frontend.HomePage import HomePage
 from frontend.GraphicPage import GraphicPage
 from frontend.MenuPage import MenuPage
+from frontend.TrainTestPage import TrainTest
 from frontend.Settings import *
 
 
@@ -26,16 +27,32 @@ class App(tk.Tk):
 
         # --------------MENU BAR---------------------------
 
-        hp = HomePage(parent=container, controller=self)
+        self.menu_frame = tk.LabelFrame(master=self, height=HEIGHT_WINDOW, width=50,
+                                        borderwidth=2, relief='flat', highlightbackground="black",
+                                        highlightcolor="black", highlightthickness=1, bg=BACK_GROUND_COLOR).place(x=0,
+                                                                                                                  y=0)
 
+        # Menu Button
+        self.menu_img = tk.PhotoImage(file='frontend/icons/menu.png')
+        self.menu_button = tk.Button(master=self.menu_frame, image=self.menu_img,
+                                     height=25, width=25, relief='flat', bg=BACK_GROUND_COLOR).place(x=10, y=10)
+
+        # Back Button
+        self.back_img = tk.PhotoImage(file='frontend/icons/back.png')
+        self.back_button = tk.Button(master=self.menu_frame, image=self.back_img, height=25, width=25,
+                                     bg=BACK_GROUND_COLOR, relief='flat',
+                                     ).place(x=10, y=46)
+
+        # Home Button
+        self.home_img = tk.PhotoImage(file='frontend/icons/home.png')
+        self.home_button = tk.Button(master=self.menu_frame, image=self.home_img, height=25, width=25,
+                                     bg=BACK_GROUND_COLOR, 
+                                     relief='flat', command=lambda : self.show_frame("HomePage")).place(x=10, y=82)
         self.frames = {}
-        for F in (HomePage, MenuPage, GraphicPage):
-            page_name = F.__name__
-            if page_name != "HomePage":
-                frame = F(parent=container, controller=self, home_page=hp)
-            else:
-                frame = F(parent=container, controller=self)
 
+        for F in (HomePage, MenuPage, GraphicPage, TrainTest):
+            page_name = F.__name__
+            frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
 
             # put all of the pages in the same location;
