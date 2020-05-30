@@ -35,19 +35,20 @@ class App(tk.Tk):
         # Menu Button
         self.menu_img = tk.PhotoImage(file='frontend/icons/menu.png')
         self.menu_button = tk.Button(master=self.menu_frame, image=self.menu_img,
-                                     height=25, width=25, relief='flat', bg=BACK_GROUND_COLOR).place(x=10, y=10)
+                                     height=25, width=25, relief='flat', bg=BACK_GROUND_COLOR,
+                                     command=lambda: self.show_frame("MenuPage")).place(x=10, y=10)
 
         # Back Button
         self.back_img = tk.PhotoImage(file='frontend/icons/back.png')
         self.back_button = tk.Button(master=self.menu_frame, image=self.back_img, height=25, width=25,
-                                     bg=BACK_GROUND_COLOR, relief='flat',
+                                     bg=BACK_GROUND_COLOR, relief='flat', command=lambda: self.show_frame("HomePage")
                                      ).place(x=10, y=46)
 
         # Home Button
         self.home_img = tk.PhotoImage(file='frontend/icons/home.png')
         self.home_button = tk.Button(master=self.menu_frame, image=self.home_img, height=25, width=25,
-                                     bg=BACK_GROUND_COLOR, 
-                                     relief='flat', command=lambda : self.show_frame("HomePage")).place(x=10, y=82)
+                                     bg=BACK_GROUND_COLOR,
+                                     relief='flat', command=lambda: self.show_frame("HomePage")).place(x=10, y=82)
         self.frames = {}
 
         for F in (HomePage, MenuPage, GraphicPage, TrainTest):
@@ -67,3 +68,6 @@ class App(tk.Tk):
         """Show a frame for the given page name"""
         frame = self.frames[page_name]
         frame.tkraise()
+
+    def get_back(self):
+        return self.back_button
