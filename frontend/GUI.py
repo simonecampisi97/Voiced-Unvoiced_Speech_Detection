@@ -23,6 +23,8 @@ class App(tk.Tk):
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
+        # --------------MENU BAR---------------------------
+
         self.menu_frame = tk.Frame(master=self, height=HEIGHT_WINDOW, width=50,
                                    borderwidth=5, relief='groove', highlightbackground="black",
                                    highlightcolor="black", highlightthickness=1, bg=BACK_GROUND_COLOR).place(x=0, y=0)
@@ -30,7 +32,6 @@ class App(tk.Tk):
         self.menu_img = tk.PhotoImage(file='frontend/Widget/icons/menu.png')
         self.menu_button = tk.Button(master=self.menu_frame, image=self.menu_img,
                                      height=25, width=25,
-                                     command=lambda: controller.show_frame("MenuPage"),
                                      bg=BACK_GROUND_COLOR).place(x=10, y=10)
 
         # Back Button
@@ -44,7 +45,7 @@ class App(tk.Tk):
                                      bg=BACK_GROUND_COLOR).place(x=10, y=82)
 
         self.frames = {}
-        for F in (MenuPage, GraphicPage):
+        for F in (MenuPage, HomePage, GraphicPage):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -54,9 +55,10 @@ class App(tk.Tk):
             # will be the one that is visible.
             frame.grid(row=0, column=0, sticky="nsew")
 
-        #self.show_frame("HomePage")
+        self.show_frame("HomePage")
 
     def show_frame(self, page_name):
-        '''Show a frame for the given page name'''
+
+        """Show a frame for the given page name"""
         frame = self.frames[page_name]
         frame.tkraise()
