@@ -33,7 +33,7 @@ class GraphicPage(tk.Frame):
 
         # --------------------------------------------------------------------------------------------------
 
-        self.upload_frame = tk.LabelFrame(master=self, text='Upload File Audio', font=self.font_label, height=80,
+        self.upload_frame = tk.LabelFrame(master=self, text='Upload File Audio', font=self.font_label, height=100,
                                           width=130, borderwidth=2, relief='flat', highlightbackground="black",
                                           highlightcolor="black", highlightthickness=1,
                                           bg=BACK_GROUND_COLOR).place(x=80, y=20)
@@ -46,4 +46,6 @@ class GraphicPage(tk.Frame):
 
     def upload_file(self):
         file_path = filedialog.askopenfilename()
-        textFile = tk.Message(master=self, relief='groove').place(x=100, y=65)
+        var = tk.StringVar()
+        textFile = tk.Message(master=self, relief='groove', width=50, textvariable=var).place(x=100, y=75)
+        var.set(str(file_path).split('/')[-1])
