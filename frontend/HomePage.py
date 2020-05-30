@@ -11,11 +11,6 @@ class HomePage(tk.Frame):
         label = tk.Label(self, text="This is the start page", font=controller.title_font)
         label.pack(side="top", fill="x", pady=10)
 
-        # -----------ROOT WINDOWS-------------
-
-        self.configure(bg=BACK_GROUND_COLOR)
-        self.position = 0
-
         # ----------Menu Bar-------------------------
 
         self.menu_frame = tk.Frame(master=self, height=HEIGHT_WINDOW, width=50,
