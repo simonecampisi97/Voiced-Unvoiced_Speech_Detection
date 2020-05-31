@@ -60,9 +60,8 @@ class GraphicPage(tk.Frame):
         var.set(str(self.file_path).split('/')[-1])
 
     def create_frame_plot(self):
-        frame = tk.Frame(master=self.tab_VUV, height=HEIGHT_WINDOW - 50,
-                         width=WIDTH_WINDOW - 210, highlightbackground="black",
-                         highlightcolor="black", highlightthickness=1, borderwidth=5)
+        frame = tk.Frame(master=self.tab_VUV, height=HEIGHT_WINDOW - 55,
+                         width=WIDTH_WINDOW - 215)
         frame.place(x=0, y=0)
         return frame
 
@@ -80,7 +79,7 @@ class GraphicPage(tk.Frame):
             return
         fs, y = wavfile.read(self.file_path)
         time = np.arange(len(y)) * 1000 * (1 / fs)
-        figure = plt.Figure(figsize=(6, 5), dpi=100)
+        figure = plt.Figure(figsize=(6, 5), dpi=95)
         ax = figure.add_subplot(111)
         ax.plot(time, y)
         chart_type = FigureCanvasTkAgg(figure=figure, master=self.frame_plot)
@@ -89,9 +88,10 @@ class GraphicPage(tk.Frame):
     def popup_msg(self, msg):
         popup = tk.Tk()
         popup.resizable(RESIZABLE, RESIZABLE)
+        popup.geometry('250x150')
         popup.wm_title("ERROR!")
         font = tkfont.Font(family='Helvetica', size=20, weight="bold")
         label = ttk.Label(popup, text=msg, font=font)
-        label.pack(side="top", fill="x", pady=10)
+        label.pack(pady=20)
         B1 = ttk.Button(popup, text="exit", command=popup.destroy)
-        B1.pack()
+        B1.pack(side='bottom', pady=25)
