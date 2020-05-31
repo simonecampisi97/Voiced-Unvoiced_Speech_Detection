@@ -10,6 +10,7 @@ class MenuPage(tk.Frame):
 
         self.controller = controller
         self.bg = BACK_GROUND_COLOR
+        self.controller.back_button.configure(command=lambda: self.controller.show_frame('HomePage'))
 
         self.font_label = self.title_font = tkfont.Font(family='Helvetica', size=10, weight="bold", slant="italic")
 

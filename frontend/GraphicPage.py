@@ -22,6 +22,7 @@ class GraphicPage(tk.Frame):
         self.bg = BACK_GROUND_COLOR
         self.font_label = self.title_font = tkfont.Font(family='Helvetica', size=10, weight="bold", slant="italic")
 
+        self.controller.back_button.configure(command=lambda: self.controller.show_frame('MenuPage'))
         # --------------------------------------------------------------------------------------------------
 
         self.upload_frame = tk.LabelFrame(master=self, text='Upload File Audio', font=self.font_label, height=150,
