@@ -50,12 +50,12 @@ class App(tk.Tk):
         # Home Button
         self.home_img = tk.PhotoImage(file='frontend/icons/home.png')
         self.home_button = tk.Button(master=self.menu_frame, image=self.home_img, height=25, width=25,
-                                     bg=BACK_GROUND_COLOR,
-                                     relief='flat', command=lambda: self.show_frame("HomePage"))
+                                     bg=BACK_GROUND_COLOR,command= self.go_home,
+                                     relief='flat')
+
         self.home_button.place(x=10, y=82)
         self.frames = {}
 
-        print(self.back_button)
         for F in (HomePage, MenuPage, GraphicPage, TrainTest):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
@@ -74,5 +74,8 @@ class App(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-    def get_back(self):
-        return self.back_button
+    def go_home(self):
+        self.show_frame('HomePage')
+
+    def go_menu(self):
+        self.show_frame('MenuPage')

@@ -19,6 +19,6 @@ def plot_result(y, Frames, title=''):
     for i in range(len(Frames.frames)):
         frame_time.append((i * Frames.frame_length) * (1 / Frames.fs) * 1000)
     plt.figure()
-    plt.plot(frame_time, y)
+    plt.plot(frame_time, Frames.y)
     plt.title(title)
     plt.show()

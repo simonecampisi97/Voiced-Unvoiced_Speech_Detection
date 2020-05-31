@@ -10,7 +10,7 @@ class MenuPage(tk.Frame):
 
         self.controller = controller
         self.bg = BACK_GROUND_COLOR
-        self.controller.back_button.configure(command=lambda: self.controller.show_frame('HomePage'))
+        self.controller.back_button.configure(command=self.controller.go_home)
 
         self.font_label = self.title_font = tkfont.Font(family='Helvetica', size=10, weight="bold", slant="italic")
 
@@ -37,7 +37,3 @@ class MenuPage(tk.Frame):
         self.label_train = tk.Label(master=self, text='Train/Test',
                                     height=0, width=12, bg=BACK_GROUND_COLOR,
                                     font=self.font_label).place(x=215, y=38)
-
-    def go_home(self):
-        self.toolbar_frame_.destroy()
-        self.controller.show_frame('HomePage')

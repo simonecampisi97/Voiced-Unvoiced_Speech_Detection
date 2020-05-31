@@ -10,8 +10,19 @@ from scipy.io import wavfile
 import numpy as np
 
 matplotlib.use("TkAgg")
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+
+def popup_message(msg):
+    popup = tk.Tk()
+    popup.resizable(RESIZABLE, RESIZABLE)
+    popup.geometry('250x150')
+    popup.wm_title("ERROR!")
+    font = tkfont.Font(family='arial black', size=20, weight="bold")
+    label = ttk.Label(popup, text=msg, font=font)
+    label.pack(pady=20)
+    B1 = ttk.Button(popup, text="exit", command=popup.destroy)
+    B1.pack(side='bottom', pady=25)
 
 
 class GraphicPage(tk.Frame):
@@ -22,7 +33,7 @@ class GraphicPage(tk.Frame):
         self.bg = BACK_GROUND_COLOR
         self.font_label = self.title_font = tkfont.Font(family='Helvetica', size=10, weight="bold", slant="italic")
 
-        self.controller.back_button.configure(command=lambda: self.controller.show_frame('MenuPage'))
+        self.controller.back_button.configure(command=self.controller.go_menu)
         # --------------------------------------------------------------------------------------------------
 
         self.upload_frame = tk.LabelFrame(master=self, text='Upload File Audio', font=self.font_label, height=150,
@@ -73,26 +84,14 @@ class GraphicPage(tk.Frame):
 
     def plot_signal(self):
         self.frame_plot = self.update_frame_plot(self.frame_plot)
-
-        print(self.file_path)
         if self.file_path == "":
-            self.popup_msg("Upload The file first!")
+            popup_message("Upload The file first!")
             return
         fs, y = wavfile.read(self.file_path)
+
         time = np.arange(len(y)) * 1000 * (1 / fs)
-        figure = plt.Figure(figsize=(6, 5), dpi=95)
+        figure = plt.Figure(figsize=(6.5, 5), dpi=110)
         ax = figure.add_subplot(111)
         ax.plot(time, y)
         chart_type = FigureCanvasTkAgg(figure=figure, master=self.frame_plot)
         chart_type.get_tk_widget().pack()
-
-    def popup_msg(self, msg):
-        popup = tk.Tk()
-        popup.resizable(RESIZABLE, RESIZABLE)
-        popup.geometry('250x150')
-        popup.wm_title("ERROR!")
-        font = tkfont.Font(family='Helvetica', size=20, weight="bold")
-        label = ttk.Label(popup, text=msg, font=font)
-        label.pack(pady=20)
-        B1 = ttk.Button(popup, text="exit", command=popup.destroy)
-        B1.pack(side='bottom', pady=25)
