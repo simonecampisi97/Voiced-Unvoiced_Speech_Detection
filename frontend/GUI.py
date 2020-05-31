@@ -17,6 +17,7 @@ class App(tk.Tk):
         self.geometry(str(WIDTH_WINDOW) + 'x' + str(HEIGHT_WINDOW))
         self.configure(bg=BACK_GROUND_COLOR)
         self.title_font = tkfont.Font(family='Helvetica', size=18, weight="bold", slant="italic")
+        self.iconbitmap(default='frontend/icons/speech1.ico')
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
         # will be raised above the others
