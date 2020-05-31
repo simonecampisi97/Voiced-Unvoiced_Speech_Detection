@@ -32,18 +32,13 @@ class GraphicPage(tk.Frame):
         self.upload_button = tk.Button(master=self, text='File Explorer',
                                        height=1, width=10, relief='groove',
                                        bg=BACK_GROUND_COLOR, command=self.upload_file).place(x=80, y=45)
-        '''
-        self.label_graphics = ttk.Tab(master=self, text='Plot signal', font=self.font_label,
-                                           height=HEIGHT_WINDOW - 50,
-                                            width=WIDTH_WINDOW - 210, borderwidth=2, relief='flat',
-                                            highlightbackground="black",
-                                            highlightcolor="black", highlightthickness=1,
-                                            bg=BACK_GROUND_COLOR).place(x=200, y=20)
-        # self.radio_button_VUV = tk.Radiobutton(self, text='VUV', command=self.plot_signal).place(x=230, y=45)
-        '''
+
         self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50,
                                        width=WIDTH_WINDOW - 210)
+
         self.tab_VUV = ttk.Frame(self.tabControl)
+        self.frame_plot = self.create_frame_plot()
+
         self.tab_plot2 = ttk.Frame(self.tabControl)
         self.tab_plot3 = ttk.Frame(self.tabControl)
         self.tabControl.place(x=200, y=20)
@@ -64,7 +59,21 @@ class GraphicPage(tk.Frame):
                                 textvariable=var, font=font).place(x=70, y=75)
         var.set(str(self.file_path).split('/')[-1])
 
+    def create_frame_plot(self):
+        frame = tk.Frame(master=self.tab_VUV, height=HEIGHT_WINDOW - 50,
+                         width=WIDTH_WINDOW - 210, highlightbackground="black",
+                         highlightcolor="black", highlightthickness=1, borderwidth=5)
+        frame.place(x=0, y=0)
+        return frame
+
+    def update_frame_plot(self, frame):
+        frame.destroy()
+        frame_ = self.create_frame_plot()
+        return frame_
+
     def plot_signal(self):
+        self.frame_plot = self.update_frame_plot(self.frame_plot)
+
         print(self.file_path)
         if self.file_path == "":
             self.popup_msg("Upload The file first!")
@@ -74,7 +83,7 @@ class GraphicPage(tk.Frame):
         figure = plt.Figure(figsize=(6, 5), dpi=100)
         ax = figure.add_subplot(111)
         ax.plot(time, y)
-        chart_type = FigureCanvasTkAgg(figure=figure, master=self.tab_VUV)
+        chart_type = FigureCanvasTkAgg(figure=figure, master=self.frame_plot)
         chart_type.get_tk_widget().pack()
 
     def popup_msg(self, msg):
