@@ -4,7 +4,10 @@ from frontend.HomePage import HomePage
 from tkinter import font as tkfont
 import tkinter.ttk as ttk
 from tkinter import filedialog
+import matplotlib.pyplot as plt
 import matplotlib
+from scipy.io import wavfile
+import numpy as np
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -28,7 +31,7 @@ class GraphicPage(tk.Frame):
 
         self.upload_button = tk.Button(master=self, text='File Explorer',
                                        height=1, width=10, relief='groove',
-                                       bg=BACK_GROUND_COLOR, command=self.upload_file).place(x=100, y=45)
+                                       bg=BACK_GROUND_COLOR, command=self.upload_file).place(x=80, y=45)
         '''
         self.label_graphics = ttk.Tab(master=self, text='Plot signal', font=self.font_label,
                                            height=HEIGHT_WINDOW - 50,
@@ -48,13 +51,17 @@ class GraphicPage(tk.Frame):
         self.tabControl.add(self.tab_plot2, text='plot2')
         self.tabControl.add(self.tab_plot3, text='plot3')
 
+        self.plot_button = tk.Button(master=self, text='Plot',
+                                     height=1, width=10, relief='groove',
+                                     bg=BACK_GROUND_COLOR, command=self.plot_signal).place(x=80, y=180)
+
     def upload_file(self):
         self.file_path = filedialog.askopenfilename(title="Select Audio File",
                                                     filetypes=(("wav files", "*.wav"), ("all files", "*.*")))
-
+        font = tkfont.Font(family='Helvetica', size=7)
         var = tk.StringVar()
         text_label = tk.Message(master=self, relief='groove', width=100,
-                                textvariable=var).place(x=90, y=75)
+                                textvariable=var, font=font).place(x=70, y=75)
         var.set(str(self.file_path).split('/')[-1])
 
     def plot_signal(self):
@@ -62,17 +69,13 @@ class GraphicPage(tk.Frame):
         if self.file_path == "":
             self.popup_msg("Upload The file first!")
             return
-        # f = Figure(figsize=(5, 5), dpi=100)
-        #a = f.add_subplot(111)
-        #a.plot([1, 2, 3, 4, 5, 6, 7, 8], [5, 6, 1, 3, 8, 9, 3, 5])
-        canvas = FigureCanvasTkAgg(master=self.tabControl)
-
-        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
-        canvas.draw_idle()
-
-        toolbar = NavigationToolbar2Tk(canvas, self)
-        toolbar.update()
-        canvas.tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        fs, y = wavfile.read(self.file_path)
+        time = np.arange(len(y)) * 1000 * (1 / fs)
+        figure = plt.Figure(figsize=(6, 5), dpi=100)
+        ax = figure.add_subplot(111)
+        ax.plot(time, y)
+        chart_type = FigureCanvasTkAgg(figure=figure, master=self.tab_VUV)
+        chart_type.get_tk_widget().pack()
 
     def popup_msg(self, msg):
         popup = tk.Tk()
