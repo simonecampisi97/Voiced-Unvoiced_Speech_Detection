@@ -32,7 +32,7 @@ class App(tk.Tk):
         self.menu_frame = tk.LabelFrame(master=self, height=HEIGHT_WINDOW, width=50,
                                         borderwidth=2, relief='flat', highlightbackground="black",
                                         highlightcolor="black", highlightthickness=1,
-                                        bg=BACK_GROUND_COLOR).place(x=0, y=0)
+                                        bg=SIDE_BAR_COLOR).place(x=0, y=0)
 
         # Menu Button
         self.menu_img = tk.PhotoImage(file='frontend/icons/menu.png')
