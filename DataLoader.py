@@ -2,11 +2,10 @@ import os
 
 import librosa
 import numpy as np
-from scipy.io import wavfile
 from torchvision import datasets
 
 from Frames import Frames
-from ParametersExtraction import st_energy, st_zcr, MFCC
+from ParametersExtraction import st_energy, st_zcr, st_magnitude, MFCC
 
 
 def label_extraction(file_name):
@@ -17,15 +16,16 @@ def label_extraction(file_name):
     return voicing
 
 
-def features_extraction(rate, data):
+def features_extraction(rate, data, size):
     frames = Frames(data, rate)
     feature = [st_energy(frames),
-               # st_magnitude(frames),
+               st_magnitude(frames),
                st_zcr(frames)]  # energy, ZCR, MFCC(13)
+    # TODO: add MFCC to the features
 
     _mfcc = MFCC(data, rate, frames.frame_length, frames.shift_length, frames.window)
 
-    return np.array(feature).T
+    return np.array(feature)
 
 
 class DataLoader(datasets.VisionDataset):
@@ -86,13 +86,13 @@ class DataLoader(datasets.VisionDataset):
         label_path = self.get_ref_path(file_name, gender_idx, speaker_idx)
 
         # Load and process the data
-        fs, x = wavfile.read(wav_path)
+        # fs, x = wavfile.read(wav_path)
         x, fs = librosa.core.load(wav_path, self.sample_rate)
         y = label_extraction(label_path)
 
-        features = features_extraction(rate=fs, data=x)
+        features = features_extraction(rate=fs, data=x, size=len(y))
 
-        return self.transforms(features), y
+        return wav_path, self.transforms(features), y
 
     def get_ref_path(self, file_name, gender_idx, speaker_idx):
         return os.path.join(self.root,

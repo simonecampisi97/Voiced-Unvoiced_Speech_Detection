@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     dl = DataLoader(dataset_dir, transform)
 
-    feature, label = dl[0]
+    _, feature, label = dl[0]
 
     print("Type feature:", type(feature))
     print("Type labels:", (type(label)))

@@ -7,10 +7,17 @@ from DataLoader import DataLoader
 
 
 def load_data(data_dir):
-    transform = transforms.Compose(
-        [transforms.ToTensor()])
+    data_transforms = {
+        'train': transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor()
+        ]),
+        'val': transforms.Compose([
+            transforms.ToTensor()
+        ]),
+    }
 
-    image_datasets = {x: DataLoader(os.path.join(data_dir, x), transform[x])
+    image_datasets = {x: DataLoader(os.path.join(data_dir, x), data_transforms[x])
                       for x in ['train', 'val']}
 
     dataloaders = {x: torch.utils.data.DataLoader(image_datasets[x], batch_size=256,
@@ -21,8 +28,9 @@ def load_data(data_dir):
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(dataset_sizes)
-    return dataloaders
 
 
 if __name__ == "__main__":
+    dataDir = ""
+    dataLoader = load_data(dataDir)
     pass

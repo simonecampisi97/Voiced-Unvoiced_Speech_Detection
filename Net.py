@@ -1,10 +1,11 @@
-import torch
-import torch.nn as nn
 import copy
 import time
 
+import torch
+import torch.nn as nn
 
-def train_model(model, dataloaders, criterion, optimizer, scheduler, num_epochs=25):
+
+def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, scheduler, num_epochs=25):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -24,33 +25,32 @@ def train_model(model, dataloaders, criterion, optimizer, scheduler, num_epochs=
             running_loss = 0.0
             running_corrects = 0
             # Iterate over data.
-            for path,inputs, labels,b in dataloaders[phase]:
-               
+            for path, inputs, labels in dataloaders[phase]:
+
                 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-                #move to gpu
+                # move to gpu
                 inputs = inputs.clone().detach().to(device)
                 labels = labels.clone().detach().to(device)
-                b = b.clone().detach().requires_grad_(True).to(device)
-                
+
                 # zero the parameter gradients
                 optimizer.zero_grad()
 
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
-                    ##Pass the input to the mode, what outputs are we expecting?
-                    classes, boxes = model(inputs)                 
-                    
-                    ##Calculate each loss and combine them in the multitask loss
+                    # Pass the input to the mode, what outputs are we expecting?
+                    classes = model(inputs)
+
+                    # Calculate each loss and combine them in the multitask loss
                     loss = criterion(classes, labels)
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
-                        loss.backward()                        
+                        loss.backward()
                         optimizer.step()
-                    
+
                 # statistics
-                #Assess the accuracy of the localization (hint: use mean iou) and of the classification
+                # TODO da sistemare
                 running_loss += loss.item() * inputs.size(0)
                 winners = classes.argmax(dim=1)
                 running_corrects += torch.sum(winners == labels)
@@ -60,9 +60,8 @@ def train_model(model, dataloaders, criterion, optimizer, scheduler, num_epochs=
             
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
-            
-            print('{}: Loss: {:.4f}  -  Acc(classification): {:.4f}'.format(
-                                                                            phase,
+
+            print('{}: Loss: {:.4f}  -  Acc(classification): {:.4f}'.format(phase,
                                                                             epoch_loss,
                                                                             epoch_acc))
 
@@ -70,7 +69,6 @@ def train_model(model, dataloaders, criterion, optimizer, scheduler, num_epochs=
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 best_model_wts = copy.deepcopy(model.state_dict())
-
         print()
 
     time_elapsed = time.time() - since
@@ -83,39 +81,36 @@ def train_model(model, dataloaders, criterion, optimizer, scheduler, num_epochs=
     return model
 
 
-class Neural_Network(nn.Module):
-    def __init__(self, ):
-        super(Neural_Network, self).__init__()
+class Net(nn.Module):
+    def __init__(self, inputSize, outputSize=1):
+        super(Net, self).__init__()
         # parameters
         # TODO: parameters can be parameterized instead of declaring them here
-        self.inputSize = 15
-        self.outputSize = 1
+        self.inputSize = inputSize
+        self.outputSize = outputSize
         self.hiddenSize = 3
 
         # weights
         self.layer1 = nn.Linear(self.inputSize, self.hiddenSize)
+        self.relu = nn.ReLU()
+
         self.layer2 = nn.Linear(self.hiddenSize, self.outputSize)
+        self.sigmoid = nn.Sigmoid()
 
-    def forward(self, X):
-        x = self.layer1(x)
-        x = nn.ReLU(x)
-        x = self.layer2(X)
-        x = nn.Sigmoid(x)
-        return x
+    def forward(self, x):
+        # Layer 1
+        out = self.layer1(x)
+        out = self.relu(out)
 
-    def train(self, X, y):
-        o = self.forward(X)
-        self.backward(X, y, o)
+        # Layer 2
+        out = self.layer2(out)
+        y = self.sigmoid(out)
 
-    def saveWeights(self, model):
-        # we will use the PyTorch internal storage functions
-        torch.save(model, "NN")
-        # you can reload model with all the weights and so forth with:
-        # torch.load("NN")
+        return y
 
-    def predict(self):
-        print("Predicted data based on trained weights: ")
-        print("Input (scaled): \n" + str("TO IMPLEMENT"))
-        # print("Output: \n" + str(self.forward("TO IMPLEMENT")))
+    def save_model(self, path):
+        torch.save(self.state_dict(), path)
 
-
+    def load_model(self, path):
+        self.load_state_dict(torch.load(path))
+        self.eval()
