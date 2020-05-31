@@ -7,8 +7,6 @@ class HomePage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.bg = BACK_GROUND_COLOR
-        #self.controller.back_button.configure(command=lambda: self.controller.show_frame('HomePage'))
+        self.controller.back_button.configure(command=self.controller.go_home)
         label = tk.Label(self, text="HOME PAGE", font=self.controller.title_font, bg=BACK_GROUND_COLOR)
         label.pack(side="top", fill="x", pady=10)
-
-
