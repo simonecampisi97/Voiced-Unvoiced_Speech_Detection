@@ -1,6 +1,8 @@
 import torchvision.transforms as transforms
+from tqdm import tqdm
 
 from DataLoader import DataLoader
+from DataSet import DataSet
 
 if __name__ == "__main__":
     #    dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED_CUSTOM\\SPEECH DATA"
@@ -9,16 +11,12 @@ if __name__ == "__main__":
     transform = transforms.Compose(
         [transforms.ToTensor()])
 
-    dl = DataLoader(dataset_dir, transform)
+    dl = DataLoader(dataset_dir)
+    print("Found {} files...".format(len(dl)))
 
-    _, feature, label = dl[0]
+    print("\nCreating dataset from row data...", flush=True)
+    ds = DataSet(dl)
+    ds.info()
 
-    print("Type feature:", type(feature))
-    print("Type labels:", (type(label)))
-    print()
-
-    print("Size feature:", feature.shape)
-    print("Size labels:", label.shape)
-    print()
-
-    print(type(label[0]), label[0])
+    for i in tqdm(range(len(ds))):
+        tmp = ds[i]
