@@ -1,31 +1,39 @@
 import os
 
+import librosa
 import numpy as np
-from scipy.io import wavfile
 from torchvision import datasets
 
 from Frames import Frames
+from ParametersExtraction import st_energy, st_zcr, st_magnitude, MFCC
 
 
 def label_extraction(file_name):
     with open(file_name) as f:
-        voicing = [int(line.rstrip().split(" ")[1]) for line in f]
-    voicing = np.array(voicing)
+        voicing = [(line.rstrip().split(" ")[1]) for line in f]
+    voicing = np.array(voicing).astype(np.float32)
 
     return voicing
 
 
-def features_extraction(rate, data):
+def features_extraction(rate, data, size):
     frames = Frames(data, rate)
-    feature = []  # energy, ZCR, MFCC(13)
-    # TODO add feature extraction
+    feature = [st_energy(frames),
+               st_magnitude(frames),
+               st_zcr(frames)]  # energy, ZCR, MFCC(13)
+    # TODO: add MFCC to the features
+
+    _mfcc = MFCC(data, rate, frames.frame_length, frames.shift_length, frames.window)
 
     return np.array(feature)
 
 
 class DataLoader(datasets.VisionDataset):
 
-    def __init__(self, root):
+    def __init__(self, root, transforms):
+        self.sample_rate = 48000
+
+        self.transforms = transforms
         self.root = root
         self.genders = ['FEMALE', 'MALE']
 
@@ -78,12 +86,13 @@ class DataLoader(datasets.VisionDataset):
         label_path = self.get_ref_path(file_name, gender_idx, speaker_idx)
 
         # Load and process the data
-        fs, x = wavfile.read(wav_path)
+        # fs, x = wavfile.read(wav_path)
+        x, fs = librosa.core.load(wav_path, self.sample_rate)
         y = label_extraction(label_path)
 
-        features = features_extraction(rate=fs, data=x)
+        features = features_extraction(rate=fs, data=x, size=len(y))
 
-        return features, y
+        return wav_path, self.transforms(features), y
 
     def get_ref_path(self, file_name, gender_idx, speaker_idx):
         return os.path.join(self.root,

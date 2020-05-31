@@ -1,54 +1,116 @@
+import copy
+import time
+
 import torch
 import torch.nn as nn
 
 
-class Neural_Network(nn.Module):
-    def __init__(self, ):
-        super(Neural_Network, self).__init__()
+def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, scheduler, num_epochs=25):
+    since = time.time()
+
+    best_model_wts = copy.deepcopy(model.state_dict())
+    best_acc = 0.0
+
+    for epoch in range(num_epochs):
+        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+        print('-' * 10)
+
+        # Each epoch has a training and validation phase
+        for phase in ['train', 'val']:
+            if phase == 'train':
+                model.train()  # Set model to training mode
+            else:
+                model.eval()   # Set model to evaluate mode
+
+            running_loss = 0.0
+            running_corrects = 0
+            # Iterate over data.
+            for path, inputs, labels in dataloaders[phase]:
+
+                device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+                # move to gpu
+                inputs = inputs.clone().detach().to(device)
+                labels = labels.clone().detach().to(device)
+
+                # zero the parameter gradients
+                optimizer.zero_grad()
+
+                # forward
+                # track history if only in train
+                with torch.set_grad_enabled(phase == 'train'):
+                    # Pass the input to the mode, what outputs are we expecting?
+                    classes = model(inputs)
+
+                    # Calculate each loss and combine them in the multitask loss
+                    loss = criterion(classes, labels)
+
+                    # backward + optimize only if in training phase
+                    if phase == 'train':
+                        loss.backward()
+                        optimizer.step()
+
+                # statistics
+                # TODO da sistemare
+                running_loss += loss.item() * inputs.size(0)
+                winners = classes.argmax(dim=1)
+                running_corrects += torch.sum(winners == labels)
+                
+            if phase == 'train':
+                scheduler.step()
+            
+            epoch_loss = running_loss / dataset_sizes[phase]
+            epoch_acc = running_corrects.double() / dataset_sizes[phase]
+
+            print('{}: Loss: {:.4f}  -  Acc(classification): {:.4f}'.format(phase,
+                                                                            epoch_loss,
+                                                                            epoch_acc))
+
+            # deep copy the model
+            if phase == 'val' and epoch_acc > best_acc:
+                best_acc = epoch_acc
+                best_model_wts = copy.deepcopy(model.state_dict())
+        print()
+
+    time_elapsed = time.time() - since
+    print('Training complete in {:.0f}m {:.0f}s'.format(
+        time_elapsed // 60, time_elapsed % 60))
+    print('Best val Acc: {:4f}'.format(best_acc))
+
+    # load best model weights
+    model.load_state_dict(best_model_wts)
+    return model
+
+
+class Net(nn.Module):
+    def __init__(self, inputSize, outputSize=1):
+        super(Net, self).__init__()
         # parameters
         # TODO: parameters can be parameterized instead of declaring them here
-        self.inputSize = 15
-        self.outputSize = 1
+        self.inputSize = inputSize
+        self.outputSize = outputSize
         self.hiddenSize = 3
 
         # weights
-        self.W1 = torch.randn(self.inputSize, self.hiddenSize)  # 2 X 3 tensor
-        self.W2 = torch.randn(self.hiddenSize, self.outputSize)  # 3 X 1 tensor
+        self.layer1 = nn.Linear(self.inputSize, self.hiddenSize)
+        self.relu = nn.ReLU()
 
-    def forward(self, X):
-        self.z = torch.matmul(X, self.W1)  # 3 X 3 ".dot" does not broadcast in PyTorch
-        self.z2 = self.sigmoid(self.z)  # activation function
-        self.z3 = torch.matmul(self.z2, self.W2)
-        o = self.sigmoid(self.z3)  # final activation function
-        return o
+        self.layer2 = nn.Linear(self.hiddenSize, self.outputSize)
+        self.sigmoid = nn.Sigmoid()
 
-    def sigmoid(self, s):
-        return 1 / (1 + torch.exp(-s))
+    def forward(self, x):
+        # Layer 1
+        out = self.layer1(x)
+        out = self.relu(out)
 
-    def sigmoidPrime(self, s):
-        # derivative of sigmoid
-        return s * (1 - s)
+        # Layer 2
+        out = self.layer2(out)
+        y = self.sigmoid(out)
 
-    def backward(self, X, y, o):
-        self.o_error = y - o  # error in output
-        self.o_delta = self.o_error * self.sigmoidPrime(o)  # derivative of sig to error
-        self.z2_error = torch.matmul(self.o_delta, torch.t(self.W2))
-        self.z2_delta = self.z2_error * self.sigmoidPrime(self.z2)
-        self.W1 += torch.matmul(torch.t(X), self.z2_delta)
-        self.W2 += torch.matmul(torch.t(self.z2), self.o_delta)
+        return y
 
-    def train(self, X, y):
-        # forward + backward pass for training
-        o = self.forward(X)
-        self.backward(X, y, o)
+    def save_model(self, path):
+        torch.save(self.state_dict(), path)
 
-    def saveWeights(self, model):
-        # we will use the PyTorch internal storage functions
-        torch.save(model, "NN")
-        # you can reload model with all the weights and so forth with:
-        # torch.load("NN")
-
-    def predict(self):
-        print("Predicted data based on trained weights: ")
-        print("Input (scaled): \n" + str(xPredicted))
-        print("Output: \n" + str(self.forward(xPredicted)))
+    def load_model(self, path):
+        self.load_state_dict(torch.load(path))
+        self.eval()
