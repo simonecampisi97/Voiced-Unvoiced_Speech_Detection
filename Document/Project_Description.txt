@@ -23,4 +23,5 @@ Parametri da calcolare:
 
 Link utili:
 -https://stackoverflow.com/questions/2060628/reading-wav-files-in-python (librerie gestione audio)
--https://www.researchgate.net/post/What_is_the_most_efficient_method_for_detecting_voiced_Unvoiced_silence_regions_in_speech_data_based_on_signal_processing_techniques_for_clean_speech 
+-https://www.researchgate.net/post/What_is_the_most_efficient_method_for_detecting_voiced_Unvoiced_silence_regions_in_speech_data_based_on_signal_processing_techniques_for_clean_speech
+-https://mega.nz/file/EhQTSaSA#vZArI9Rs2AqHcYWIKhLPcnsG5-1P8C0FXvpbmpVPBLg (database)
