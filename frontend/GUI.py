@@ -32,12 +32,12 @@ class App(tk.Tk):
         self.menu_frame = tk.LabelFrame(master=self, height=HEIGHT_WINDOW, width=50,
                                         borderwidth=2, relief='flat', highlightbackground="black",
                                         highlightcolor="black", highlightthickness=1,
-                                        bg=BACK_GROUND_COLOR).place(x=0, y=0)
+                                        bg=SIDE_BAR_COLOR).place(x=0, y=0)
 
         # Menu Button
         self.menu_img = tk.PhotoImage(file='frontend/icons/menu.png')
         self.menu_button = tk.Button(master=self.menu_frame, image=self.menu_img,
-                                     height=25, width=25, relief='flat', bg=BACK_GROUND_COLOR,
+                                     height=25, width=25, relief='flat', bg=SIDE_BAR_COLOR,
                                      command=lambda: self.show_frame("MenuPage"))
         self.menu_button.place(x=10, y=10)
 
@@ -45,13 +45,13 @@ class App(tk.Tk):
         self.back_img = tk.PhotoImage(file='frontend/icons/back.png')
 
         self.back_button = tk.Button(master=self.menu_frame, image=self.back_img, height=25, width=25,
-                                     bg=BACK_GROUND_COLOR, relief='flat', command=lambda: self.show_frame("HomePage"))
+                                     bg=SIDE_BAR_COLOR, relief='flat', command=lambda: self.show_frame("HomePage"))
         self.back_button.place(x=10, y=46)
 
         # Home Button
         self.home_img = tk.PhotoImage(file='frontend/icons/home.png')
         self.home_button = tk.Button(master=self.menu_frame, image=self.home_img, height=25, width=25,
-                                     bg=BACK_GROUND_COLOR,command= self.go_home,
+                                     bg=SIDE_BAR_COLOR,command= self.go_home,
                                      relief='flat')
 
         self.home_button.place(x=10, y=82)
