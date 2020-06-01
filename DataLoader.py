@@ -93,11 +93,13 @@ class DataLoader(datasets.VisionDataset):
         # Load and process the data
         # fs, x = wavfile.read(wav_path)
         x, fs = librosa.core.load(wav_path, self.sample_rate)
-        y = label_extraction(label_path)
 
+        y = label_extraction(label_path)
         features = features_extraction(rate=fs, data=x, gender_id=gender_idx)
 
-        return wav_path, features, y
+        size = min(len(y), len(features))
+
+        return wav_path, features[:size], y[:size]
 
     def get_ref_path(self, file_name, gender_idx, speaker_idx):
         return os.path.join(self.root,

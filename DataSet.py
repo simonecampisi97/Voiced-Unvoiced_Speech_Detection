@@ -11,7 +11,6 @@ class DataSet:
     def __init__(self, data_loader: DataLoader):
         self.labels = []
         self.features = []
-        # self.features = np.array([], dtype=np.float32).reshape(0, 18)
 
         self.size = 0
         self.len_label = 0
@@ -24,7 +23,6 @@ class DataSet:
 
             self.labels = np.concatenate((self.labels, label))
             self.features.append(feature)
-            # self.features = np.concatenate((self.features, feature))
 
             self.len_label += len(label)
             self.len_feature += len(feature)
@@ -41,6 +39,7 @@ class DataSet:
 
     def info(self):
         print("Number of frames:", len(self))
+        print()
 
         print("Label length:", len(self.labels), self.len_label)
         print("Label shape:", self.labels.shape)
