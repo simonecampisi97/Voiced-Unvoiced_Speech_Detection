@@ -105,6 +105,5 @@ class DataLoader(datasets.VisionDataset):
     def get_mic_path(self, file_name, gender_idx, speaker_idx):
         return os.path.join(self.root,
                             self.genders[gender_idx],
-                            "MIC",
                             self.genders[gender_idx][0] + "{:02d}".format(speaker_idx + 1),
                             file_name)
