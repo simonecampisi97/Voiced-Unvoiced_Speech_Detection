@@ -31,6 +31,7 @@ def features_extraction(rate, data, size):
 class DataLoader(datasets.VisionDataset):
 
     def __init__(self, root, transforms):
+        super().__init__(root, transforms)
         self.sample_rate = 48000
 
         self.transforms = transforms
