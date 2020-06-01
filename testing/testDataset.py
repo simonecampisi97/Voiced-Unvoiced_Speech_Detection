@@ -2,16 +2,22 @@ import torchvision.transforms as transforms
 from librosa.core import load
 
 from DataLoader import DataLoader
+from DataSet import DataSet
 from ParametersExtraction import *
 
 if __name__ == "__main__":
-    dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
-    # dataset_dir = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+    # dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+    dataset_dir = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
 
     transform = transforms.Compose(
         [transforms.ToTensor()])
 
     dl = DataLoader(dataset_dir)
+
+    ds = DataSet(dl)
+    ds.info()
+
+    exit()
 
     _, feature, label = dl[0]
 
