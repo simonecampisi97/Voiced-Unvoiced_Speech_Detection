@@ -1,4 +1,7 @@
 import torchvision.transforms as transforms
+from ParametersExtraction import *
+from scipy.io import wavfile
+from librosa.core import load
 
 from DataLoader import DataLoader
 
@@ -22,3 +25,10 @@ if __name__ == "__main__":
     print()
 
     print(type(label[0]), label[0])
+
+    y, fs = load(path='TestData/lar_M08_si1794.wav', sr=48000)
+    frames = Frames(y=y, fs=fs)
+
+    print('Number of Frame of the signal: ', len(frames.windowed_frames))
+
+    MFCC(signal=y.astype('float'), fs=fs, frame_length=frames.frame_length, hop=frames.shift_length, window='hann')
