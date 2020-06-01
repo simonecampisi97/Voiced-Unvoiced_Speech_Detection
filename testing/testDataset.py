@@ -5,8 +5,8 @@ from DataLoader import DataLoader
 from DataSet import DataSet
 
 if __name__ == "__main__":
-    #    dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED_CUSTOM\\SPEECH DATA"
-    dataset_dir = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+    dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+    # dataset_dir = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
 
     transform = transforms.Compose(
         [transforms.ToTensor()])

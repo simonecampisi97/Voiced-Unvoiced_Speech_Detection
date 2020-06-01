@@ -9,7 +9,7 @@ import matplotlib
 from scipy.io import wavfile
 import numpy as np
 from Frames import Frames
-from utils.utils import *
+from utils.support_funcion import *
 from ParametersExtraction import *
 
 matplotlib.use("TkAgg")
@@ -23,7 +23,7 @@ def popup_message(msg):
     popup.geometry('250x150')
     popup.wm_title("ERROR!")
     font = tkfont.Font(family='arial black', size=20, weight="bold")
-    label = tk.Label(master=popup, text=msg, font=font,bg=BACK_GROUND_COLOR)
+    label = tk.Label(master=popup, text=msg, font=font, bg=BACK_GROUND_COLOR)
     label.pack(pady=20)
     B1 = ttk.Button(popup, text="exit", command=popup.destroy)
     B1.pack(side='bottom', pady=25)
@@ -67,7 +67,7 @@ class GraphicPage(tk.Frame):
                                           bg=BACK_GROUND_COLOR).place(x=60, y=20)
 
         self.upload_button = tk.Button(master=self, text='File Explorer',
-                                       height=1, width=10, relief='groove',
+                                       height=1, width=10, relief='groove', activebackground=BACK_GROUND_COLOR,
                                        bg=BACK_GROUND_COLOR, command=self.upload_file).place(x=80, y=45)
 
         self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50,
@@ -95,7 +95,7 @@ class GraphicPage(tk.Frame):
         self.tabControl.add(self.tab_hnr, text='st-hnr')
         self.tabControl.add(self.tab_energy, text='st-energy')
 
-        self.plot_button = tk.Button(master=self, text='Plot',
+        self.plot_button = tk.Button(master=self, text='Plot', activebackground=BACK_GROUND_COLOR,
                                      height=1, width=10, relief='groove',
                                      bg=BACK_GROUND_COLOR, command=self.plot_signal).place(x=80, y=180)
 
@@ -109,7 +109,6 @@ class GraphicPage(tk.Frame):
         var.set(str(self.file_path).split('/')[-1])
 
     def plot_signal(self):
-
         self.frame_plot = update_frame_plot(self.frame_plot, tab=self.tab_VUV)
         self.frame_plot2 = update_frame_plot(self.frame_plot2, tab=self.tab_zcr)
         self.frame_plot3 = update_frame_plot(self.frame_plot3, tab=self.tab_mag)
@@ -128,7 +127,7 @@ class GraphicPage(tk.Frame):
 
         figure = plt.Figure(figsize=(9, 5), dpi=90)
         ax = figure.add_subplot(111)
-        ax.plot(time, y, ms= 0.2)
+        ax.plot(time, y, ms=0.2)
         ax.set_title('Voiced/Unvoiced Prediction', fontsize=20)
         ax.set_xlabel('time(milliseconds)')
         ax.set_ylabel('signal')
