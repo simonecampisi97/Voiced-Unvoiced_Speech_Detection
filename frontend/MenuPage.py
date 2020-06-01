@@ -30,11 +30,11 @@ class MenuPage(tk.Frame):
                                       height=0, width=12,font=self.font_label,
                                       bg=MENU_COLOR).place(x=115, y=38)
 
-        self.button_train_img = tk.PhotoImage(file='frontend/icons/train.png')
-        self.button_train = tk.Button(master=self, text='Test/Train', relief='flat',
-                                      image=self.button_train_img, height=25, width=25, bg=MENU_COLOR,
-                                      command=lambda: self.controller.show_frame("TrainTest")).place(x=250, y=5)
+      # self.button_train_img = tk.PhotoImage(file='frontend/icons/train.png')
+      # self.button_train = tk.Button(master=self, text='Test/Train', relief='flat',
+      #                               image=self.button_train_img, height=25, width=25, bg=MENU_COLOR,
+      #                               command=lambda: self.controller.show_frame("TrainTest")).place(x=250, y=5)
 
-        self.label_train = tk.Label(master=self, text='Train/Test',
-                                    height=0, width=12, bg=MENU_COLOR,
-                                    font=self.font_label).place(x=215, y=38)
+      # self.label_train = tk.Label(master=self, text='Train/Test',
+      #                             height=0, width=12, bg=MENU_COLOR,
+      #                             font=self.font_label).place(x=215, y=38)
