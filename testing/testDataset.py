@@ -1,9 +1,8 @@
 import torchvision.transforms as transforms
-from ParametersExtraction import *
-from scipy.io import wavfile
 from librosa.core import load
 
 from DataLoader import DataLoader
+from ParametersExtraction import *
 
 if __name__ == "__main__":
     dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
@@ -12,7 +11,7 @@ if __name__ == "__main__":
     transform = transforms.Compose(
         [transforms.ToTensor()])
 
-    dl = DataLoader(dataset_dir, transform)
+    dl = DataLoader(dataset_dir)
 
     _, feature, label = dl[0]
 
