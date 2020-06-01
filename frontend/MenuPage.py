@@ -23,7 +23,7 @@ class MenuPage(tk.Frame):
 
         self.button_graphics_img = tk.PhotoImage(file='frontend/icons/graphic.png')
         self.button_graphic = tk.Button(master=self, relief='flat',
-                                        image=self.button_graphics_img, height=25, width=25, bg=BACK_GROUND_COLOR,
+                                        image=self.button_graphics_img, height=25, width=25, bg=MENU_COLOR,
                                         command=lambda: self.controller.show_frame("GraphicPage")).place(x=150, y=5)
 
         self.label_graphic = tk.Label(master=self, text='Plot',
@@ -32,7 +32,7 @@ class MenuPage(tk.Frame):
 
         self.button_train_img = tk.PhotoImage(file='frontend/icons/train.png')
         self.button_train = tk.Button(master=self, text='Test/Train', relief='flat',
-                                      image=self.button_train_img, height=25, width=25, bg=BACK_GROUND_COLOR,
+                                      image=self.button_train_img, height=25, width=25, bg=MENU_COLOR,
                                       command=lambda: self.controller.show_frame("TrainTest")).place(x=250, y=5)
 
         self.label_train = tk.Label(master=self, text='Train/Test',
