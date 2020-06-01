@@ -17,12 +17,12 @@ if __name__ == "__main__":
 
     ds = DataSet(dl)
     ds.info()
-
-    X_train, X_test, y_train, y_test = train_test_split(range(len(ds)), test_size=0.33, random_state=42)
-
-    exit()
-
+    print('feature. ', ds.features.shape)
     _, feature, label = dl[0]
+    X_train, X_test, y_train, y_test = train_test_split(ds.features, ds.labels, test_size=0.33, random_state=42)
+
+    print('Train: ', X_train.shape)
+    print('Test: ', X_test.shape)
 
     print("Type feature:", type(feature))
     print("Type labels:", (type(label)))

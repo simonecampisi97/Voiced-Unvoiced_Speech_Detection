@@ -45,15 +45,7 @@ def MFCC(signal, frames: Frames, n_mfcc=13):
 
     mfcc_truncated = mfcc.T[:-diff]
 
-    return mfcc_truncated
-
-
-fs, y = wavfile.read('TestData/lar_M08_si1794.wav')
-frames = Frames(y=y, fs=fs)
-
-print('Number of Frame of the signal: ', len(frames.windowed_frames))
-MFCC(signal=y.astype('float'), frames=frames)
-
+    return mfcc_truncated.T
 
 def st_HNR(frames: Frames, time_step=0.01, silence_threshold=0.1):
     hnr = []
@@ -62,3 +54,4 @@ def st_HNR(frames: Frames, time_step=0.01, silence_threshold=0.1):
                            time_step=time_step, silence_threshold=silence_threshold))
 
     return np.array(hnr)
+

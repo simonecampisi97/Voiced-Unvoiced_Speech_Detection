@@ -5,7 +5,7 @@ import numpy as np
 from torchvision import datasets
 
 from Frames import Frames
-from ParametersExtraction import st_energy, st_zcr, st_magnitude
+from ParametersExtraction import st_energy, st_zcr, st_magnitude, MFCC
 
 
 def label_extraction(file_name):
@@ -18,18 +18,14 @@ def label_extraction(file_name):
 
 def features_extraction(rate, data, gender_id):
     frames = Frames(data, rate)
-
     feature = [st_energy(frames),
                st_magnitude(frames),
                st_zcr(frames)]  # energy, ZCR, MFCC(13), gender(2)
-    # TODO: add MFCC to the features
-
-    # _mfcc = MFCC(data, rate, frames.frame_length, frames.shift_length, frames.window)
 
     gender = np.zeros((2, len(frames)), dtype=np.float32)
     gender[gender_id] = 1.
 
-    mfcc = np.ones((13, len(frames)), dtype=np.float32)
+    mfcc = MFCC(signal=data, frames=frames)
 
     return np.concatenate((np.array(feature, dtype=np.float32), gender, mfcc)).T
 
