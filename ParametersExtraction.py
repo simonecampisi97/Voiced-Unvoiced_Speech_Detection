@@ -43,11 +43,16 @@ def MFCC(signal, frames: Frames, n_mfcc=13):
 
     diff = mfcc.shape[1] - len(frames.windowed_frames)
 
-    #each row is a frame
-    mac_truncated = mfcc.T[:-diff]
-    #print(mac_truncated.shape)
+    mfcc_truncated = mfcc.T[:-diff]
 
-    return mac_truncated
+    return mfcc_truncated
+
+
+fs, y = wavfile.read('TestData/lar_M08_si1794.wav')
+frames = Frames(y=y, fs=fs)
+
+print('Number of Frame of the signal: ', len(frames.windowed_frames))
+MFCC(signal=y.astype('float'), frames=frames)
 
 
 def st_HNR(frames: Frames, time_step=0.01, silence_threshold=0.1):
