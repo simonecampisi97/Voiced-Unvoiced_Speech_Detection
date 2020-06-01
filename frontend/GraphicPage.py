@@ -19,10 +19,11 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 def popup_message(msg):
     popup = tk.Tk()
     popup.resizable(RESIZABLE, RESIZABLE)
+    popup.configure(bg=BACK_GROUND_COLOR)
     popup.geometry('250x150')
     popup.wm_title("ERROR!")
     font = tkfont.Font(family='arial black', size=20, weight="bold")
-    label = ttk.Label(popup, text=msg, font=font)
+    label = tk.Label(master=popup, text=msg, font=font,bg=BACK_GROUND_COLOR)
     label.pack(pady=20)
     B1 = ttk.Button(popup, text="exit", command=popup.destroy)
     B1.pack(side='bottom', pady=25)
@@ -127,7 +128,7 @@ class GraphicPage(tk.Frame):
 
         figure = plt.Figure(figsize=(9, 5), dpi=90)
         ax = figure.add_subplot(111)
-        ax.plot(time, y, ms=1)
+        ax.plot(time, y, ms= 0.2)
         ax.set_title('Voiced/Unvoiced Prediction', fontsize=20)
         ax.set_xlabel('time(milliseconds)')
         ax.set_ylabel('signal')
