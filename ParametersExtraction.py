@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import python_speech_features
 from Signal_Analysis.features.signal import get_HNR
+from utils.support_funcion import *
+from scipy.io import wavfile
 
 from Frames import Frames
 
@@ -33,29 +35,19 @@ def st_energy(frames: Frames):
     return energy
 
 
-def MFCC(signal, fs, frame_length, hop, window):
-    n_mfcc = 13
-    n_mels = 40
-    n_fft = 512
-    hop_length = hop
-    fmin = 0
-    fmax = None
+def MFCC(signal, frames: Frames, n_mfcc=13):
+    n_fft = int(2 ** nextpow2(frames.frame_length))
 
-    mfcc_librosa = librosa.feature.mfcc(y=signal, sr=fs, n_fft=frame_length,
-                                        n_mfcc=n_mfcc, n_mels=n_mels,
-                                        hop_length=hop_length,
-                                        fmin=fmin, fmax=fmax, htk=False)
+    mfcc = librosa.feature.mfcc(y=signal, sr=frames.fs, n_mfcc=n_mfcc, hop_length=frames.shift_length,
+                                htk=False, win_length=frames.frame_length, window=frames.window, n_fft=n_fft)
 
-    mfcc_speech = python_speech_features.mfcc(signal=signal, samplerate=fs,
-                                              winlen=frame_length / fs, winstep=hop_length / fs,
-                                              numcep=n_mfcc, nfilt=n_mels, nfft=2048, lowfreq=fmin,
-                                              highfreq=fmax, preemph=0.0, ceplifter=0, appendEnergy=False)
+    diff = mfcc.shape[1] - len(frames.windowed_frames)
 
-    print("shape mfcc(librosa):      ", np.array(mfcc_librosa).shape)
-    print("shape mfcc(speech_feature):", np.array(mfcc_speech).shape)
-    print()
+    #each row is a frame
+    mac_truncated = mfcc.T[:-diff]
+    #print(mac_truncated.shape)
 
-    return None
+    return mac_truncated
 
 
 def st_HNR(frames: Frames, time_step=0.01, silence_threshold=0.1):

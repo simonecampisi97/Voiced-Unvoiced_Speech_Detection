@@ -13,6 +13,7 @@ class Frames:
 
         self.fs = fs
         self.frame_length = int(duration * (fs / 1000))  # Analysis frame length (in samples)
+        print(self.frame_length)
         # hop_length -> librosa
 
         self.shift_length = int(float(hop_size) * (fs / 1000))
