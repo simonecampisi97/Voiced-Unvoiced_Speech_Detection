@@ -1,5 +1,6 @@
 import torchvision.transforms as transforms
 from librosa.core import load
+from sklearn.model_selection import train_test_split
 
 from DataLoader import DataLoader
 from DataSet import DataSet
@@ -16,6 +17,8 @@ if __name__ == "__main__":
 
     ds = DataSet(dl)
     ds.info()
+
+    X_train, X_test, y_train, y_test = train_test_split(range(len(ds)), test_size=0.33, random_state=42)
 
     exit()
 

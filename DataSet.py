@@ -21,10 +21,10 @@ class DataSet:
             self.labels.append(label)  # np.concatenate((self.labels, label))
             self.features.append(feature)
 
-        self.size = len(self.labels)
-
         self.labels = np.concatenate(self.labels)
         self.features = np.concatenate(self.features)
+
+        self.size = len(self.labels)
 
     def __len__(self):
         return self.size
