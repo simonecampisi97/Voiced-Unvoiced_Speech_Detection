@@ -21,7 +21,7 @@ class DataSet:
             self.labels.append(label)  # np.concatenate((self.labels, label))
             self.features.append(feature)
 
-        self.labels = np.concatenate(self.labels)
+        self.labels = np.expand_dims(np.concatenate(self.labels), axis=1)
         self.features = np.concatenate(self.features)
 
         self.size = len(self.labels)
@@ -33,8 +33,8 @@ class DataSet:
         return self.features[item], self.labels[item]
 
     def info(self):
-        print("Number of frames:", len(self))
-        print()
+        print("Dataset info:")
+        print("\t-Number of frames:", len(self))
 
-        print("Label length:", len(self.labels))
-        print("Feature length:", len(self.features))
+        print("\t-Label shape:  ", self.labels.shape)
+        print("\t-Feature shape:", self.features.shape)
