@@ -1,8 +1,26 @@
 import copy
 import time
-
+import keras
+import numpy as np
 import torch
 import torch.nn as nn
+
+
+def standardize_dataset(X_train, X_test):
+    means = []
+    stds = []
+
+    for x_i in X_train:
+        means.append(np.mean(x_i))  # Computing the image mean
+        stds.append(np.std(x_i))  # Computing the image standard deviation
+
+    dataset_mean = np.mean(means)  # Computing the dataset mean
+    dataset_std = np.mean(stds)  # Computing the dataset standard deviation
+
+    X_train_norm = (X_train - dataset_mean) / dataset_std
+    X_test_norm = (X_test - dataset_mean) / dataset_std
+
+    return X_train_norm, X_test_norm
 
 
 def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, scheduler, num_epochs=25):
@@ -20,7 +38,7 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
             if phase == 'train':
                 model.train()  # Set model to training mode
             else:
-                model.eval()   # Set model to evaluate mode
+                model.eval()  # Set model to evaluate mode
 
             running_loss = 0.0
             running_corrects = 0
@@ -54,10 +72,10 @@ def train_model(model, dataloaders, dataset_sizes, criterion, optimizer, schedul
                 running_loss += loss.item() * inputs.size(0)
                 winners = classes.argmax(dim=1)
                 running_corrects += torch.sum(winners == labels)
-                
+
             if phase == 'train':
                 scheduler.step()
-            
+
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
 
