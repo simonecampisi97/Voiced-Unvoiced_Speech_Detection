@@ -1,17 +1,19 @@
 import copy
 import time
 import keras
-from keras.models import Sequential, Input, Model
-from keras.layers import Dense, Dropout, Flatten
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.models import model_from_json
 from keras.layers.normalization import BatchNormalization
 from keras.layers.advanced_activations import LeakyReLU
-from sklearn.metrics import accuracy_score
 import tensorflow as tf
 import numpy as np
 
+MODEL_PATH = "Model/model_nn.json"
+WEIGHTS_PATH = "Model/model_weights.h5"
+
 
 def standardize_dataset(X_train, X_test):
-
     means = []
     stds = []
 
@@ -29,27 +31,28 @@ def standardize_dataset(X_train, X_test):
 
 
 class Net:
-    def __init__(self, inputSize, outputSize=1):
-
+    def __init__(self, inputSize, outputSize=1, model=Sequential(), ):
         # parameters
         # TODO: parameters can be parameterized instead of declaring them here
         self.inputSize = inputSize
         self.outputSize = outputSize
         self.hiddenSize = 3
-        self.loss = keras.losses.binary_crossentropy
-        self.optimizer = keras.optimizers.Adam()
-        self.model = Sequential()
-        # weights
-        self.layer1 = Linear(self.inputSize, self.hiddenSize)
-        self.relu = nn.ReLU()
+        self.model = model
 
-        self.layer2 = nn.Linear(self.hiddenSize, self.outputSize)
-        self.sigmoid = nn.Sigmoid()
+    def create_and_compile_model(self):
+        self.model.add(Dense(units=32, activation='relu', input_dim=self.inputSize))
+        self.model.add(Dense(units=1, activation='sigmoid'))
+        self.model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
+    def save_model(self):
+        model_json = self.model.to_json()
+        with open(MODEL_PATH, "w") as json_file:
+            json_file.write(model_json)
+        self.model.save_weights(WEIGHTS_PATH)
 
-    def save_model(self, path):
-        torch.save(self.state_dict(), path)
-
-    def load_model(self, path):
-        self.load_state_dict(torch.load(path))
-        self.eval()
+    def load_model(self):
+        with open(MODEL_PATH, "r") as json_file:
+            model_json = json_file.read()
+        self.model = model_from_json(model_json)
+        self.model.load_weights(WEIGHTS_PATH)
+        print("Model loaded from disk")
