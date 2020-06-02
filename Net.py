@@ -1,7 +1,8 @@
 import numpy as np
-from keras.layers import Dense
-from keras.models import Sequential
-from keras.models import model_from_json
+
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import model_from_json
 
 MODEL_PATH = "Model/model_nn.json"
 WEIGHTS_PATH = "Model/model_weights.h5"
@@ -29,10 +30,8 @@ class Net:
     def __init__(self, inputSize, outputSize=1):
         self.hiddenSize = 3
 
-        self.model = Sequential()
-
-        self.model.add(Dense(10, activation="relu", input_shape=(inputSize, 1)))
-        self.model.add(Dense(outputSize, activation="sigmoid"))
+        self.model = Sequential([Dense(30, activation="relu", input_shape=(inputSize,)),
+                                 Dense(outputSize, activation="sigmoid")])
 
     def compile(self, optimizer='adam', loss='binary_crossentropy', metrics=None):
         if metrics is None:

@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 
 from DataLoader import DataLoader
 from DataSet import DataSet
-from utils.saveVariable import *
+from utils.saveVariable import load_var, save_var
 
 if __name__ == "__main__":
     # dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"

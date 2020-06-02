@@ -2,7 +2,6 @@ import os
 
 import librosa
 import numpy as np
-from torchvision import datasets
 
 from Frames import Frames
 from ParametersExtraction import st_energy, st_zcr, st_magnitude, MFCC
@@ -30,7 +29,7 @@ def features_extraction(rate, data, gender_id):
     return np.concatenate((np.array(feature, dtype=np.float32), gender, mfcc)).T
 
 
-class DataLoader(datasets.VisionDataset):
+class DataLoader:
 
     def __init__(self, root):
         self.sample_rate = 48000
