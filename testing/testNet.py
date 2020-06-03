@@ -8,6 +8,7 @@ from DataLoader import DataLoader
 from DataSet import DataSet
 from Net import Net
 from utils.saveVariable import save_var, load_var
+import tensorflow as tf
 
 
 def plot_history(history):
@@ -35,16 +36,23 @@ def plot_history(history):
 
 
 if __name__ == "__main__":
-    # dataset_dir = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
-    dataset_dir = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+    dataset_dir_simo = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+    dataset_dir_ale = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
 
     try:
         ds = load_var("./dataset.save")
     except FileNotFoundError:
-        dl = DataLoader(dataset_dir)
+        try:
+            dl = DataLoader(dataset_dir_ale)
+        except FileNotFoundError:
+            dl = DataLoader(dataset_dir_simo)
         time.sleep(0.01)
         ds = DataSet(dl)
         save_var(ds, "./dataset.save")
+
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    session = tf.Session(config=config)
 
     print()
     ds.info()
@@ -60,13 +68,16 @@ if __name__ == "__main__":
     es_callback = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
 
     start = time.time()
-    history = nn.model.fit(X_train, y_train, batch_size=512, epochs=15, validation_data=(X_test, y_test),
+    history = nn.model.fit(X_train, y_train, batch_size=512, epochs=15, validation_split=0.3,
                            verbose=2, callbacks=[es_callback])
     end = time.time()
     print("--- %s seconds ---" % (end - start))
 
+    test_loss, test_acc = nn.model.evaluate(X_test, y_test, verbose=1)
+    print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))
+
     plot_history(history)
 
     weights = nn.model.get_weights()
-    print(weights.shape)
+    #print(weights.shape)
     # print(weights)
