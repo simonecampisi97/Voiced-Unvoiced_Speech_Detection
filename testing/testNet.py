@@ -62,22 +62,32 @@ if __name__ == "__main__":
     print('Test: ', X_test.shape)
 
     nn = Net(ds.features.shape[1])
-    nn.compile()
-
-    # early stopping
-    es_callback = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
-
     start = time.time()
-    history = nn.model.fit(X_train, y_train, batch_size=512, epochs=15, validation_split=0.3,
-                           verbose=2, callbacks=[es_callback])
+
+    try:
+        nn.load_model()
+        nn.load_weights()
+        nn.compile()
+    except FileNotFoundError:
+        nn.compile()
+        # early stopping
+        es_callback = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
+
+        history = nn.model.fit(X_train, y_train, batch_size=512, epochs=15, validation_split=0.3,
+                               verbose=2, callbacks=[es_callback])
+        nn.serialize_model()
+        nn.serialize_weights()
+
+
     end = time.time()
     print("--- %s seconds ---" % (end - start))
 
-    test_loss, test_acc = nn.model.evaluate(X_test, y_test, verbose=1)
+    test_loss, test_acc = nn.model.evaluate(X_test, y_test, verbose=0)
     print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))
 
-    plot_history(history)
+    # plot_history(history)
 
     weights = nn.model.get_weights()
-    #print(weights.shape)
+
+    # print(weights.shape)
     # print(weights)
