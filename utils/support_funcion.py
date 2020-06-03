@@ -1,7 +1,6 @@
 import numpy as np
 
 
-# not used
 def nextpow2(x):
     return np.ceil(np.log2(abs(x)))
 

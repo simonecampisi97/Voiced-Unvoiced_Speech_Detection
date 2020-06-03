@@ -1,0 +1,40 @@
+import sys
+
+import numpy as np
+from tqdm import tqdm
+
+from DataLoader import DataLoader
+
+
+class DataSet:
+
+    def __init__(self, data_loader: DataLoader):
+        self.labels = []
+        self.features = []
+        self.size = 0
+
+        sys.stdout.flush()
+
+        for i in tqdm(range(len(data_loader))):
+            _, feature, label = data_loader[i]
+
+            self.labels.append(label)  # np.concatenate((self.labels, label))
+            self.features.append(feature)
+
+        self.labels = np.expand_dims(np.concatenate(self.labels), axis=1)
+        self.features = np.concatenate(self.features)
+
+        self.size = len(self.labels)
+
+    def __len__(self):
+        return self.size
+
+    def __getitem__(self, item):
+        return self.features[item], self.labels[item]
+
+    def info(self):
+        print("Dataset info:")
+        print("\t-Number of frames:", len(self))
+
+        print("\t-Label shape:  ", self.labels.shape)
+        print("\t-Feature shape:", self.features.shape)
