@@ -3,12 +3,17 @@ import time
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping
-
+from DataLoader import features_extraction
+from scipy.io import wavfile
+import librosa
+import numpy as np
 from DataLoader import DataLoader
 from DataSet import DataSet
 from Net import Net
 from utils.saveVariable import save_var, load_var
 import tensorflow as tf
+from utils.support_funcion import plot_result
+from Frames import Frames
 
 
 def plot_history(history):
@@ -35,6 +40,17 @@ def plot_history(history):
     plt.show()
 
 
+def standardize_dataset(Xtr, Xte):
+
+    dataset_mean = np.mean(Xtr, axis=0)  # Computing the dataset mean
+    dataset_std = np.std(Xtr, axis=0)  # Computing the dataset standard deviation
+
+    X_train_norm = (Xtr - dataset_mean) / dataset_std
+    X_test_norm = (Xte - dataset_mean) / dataset_std
+
+    return X_train_norm, X_test_norm
+
+
 if __name__ == "__main__":
     dataset_dir_simo = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
     dataset_dir_ale = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
@@ -58,6 +74,7 @@ if __name__ == "__main__":
     ds.info()
 
     X_train, X_test, y_train, y_test = train_test_split(ds.features, ds.labels, test_size=0.33, random_state=42)
+    X_train, X_test = standardize_dataset(X_train,X_test)
     print('Train:', X_train.shape)
     print('Test: ', X_test.shape)
 
@@ -78,16 +95,26 @@ if __name__ == "__main__":
         nn.serialize_model()
         nn.serialize_weights()
 
-
     end = time.time()
     print("--- %s seconds ---" % (end - start))
 
-    test_loss, test_acc = nn.model.evaluate(X_test, y_test, verbose=0)
-    print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))
+    # test_loss, test_acc = nn.model.evaluate(X_test, y_test, verbose=0)
+    # print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))
 
-    # plot_history(history)
+    '''
+    # test on single file
+    y, fs = librosa.core.load('C:\\Users\\simoc\\SPR_Project\\TestData\\mic_M03_sa1.wav', sr=48000)
+    frames = Frames(y=y, fs=fs)
+    new_data = features_extraction(fs, y, gender_id=1)
+    time = np.arange(len(y)) * 1000 * fs
+    prediction = nn.model.predict_classes(new_data)
 
-    weights = nn.model.get_weights()
+    for i, frame_labeled in enumerate(prediction):
+        idx = i * frames.shift_length
+        t_frame = time[idx:idx + frames.frame_length]
+        plt.plot(t_frame, np.full(len(t_frame), frame_labeled))
 
-    # print(weights.shape)
-    # print(weights)
+    plt.show()
+
+    # print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))
+    '''

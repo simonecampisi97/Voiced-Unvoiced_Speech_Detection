@@ -8,23 +8,6 @@ MODEL_PATH = "Model/model_nn.json"
 WEIGHTS_PATH = "Model/model_weights.h5"
 
 
-def standardize_dataset(X_train, X_test):
-    means = []
-    stds = []
-
-    for x_i in X_train:
-        means.append(np.mean(x_i))  # Computing the image mean
-        stds.append(np.std(x_i))  # Computing the image standard deviation
-
-    dataset_mean = np.mean(means)  # Computing the dataset mean
-    dataset_std = np.mean(stds)  # Computing the dataset standard deviation
-
-    X_train_norm = (X_train - dataset_mean) / dataset_std
-    X_test_norm = (X_test - dataset_mean) / dataset_std
-
-    return X_train_norm, X_test_norm
-
-
 class Net:
 
     def __init__(self, inputSize, outputSize=1):
