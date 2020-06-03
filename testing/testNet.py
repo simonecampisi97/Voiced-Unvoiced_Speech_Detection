@@ -102,4 +102,4 @@ if __name__ == "__main__":
 
     # test on single file
     path_file = 'C:\\Users\\simoc\\SPR_Project\\TestData\\mic_M03_sa1.wav'
-    #plot_model_prediction(path_file=path_file,data_root=dataset_dir_simo,model=nn.model)
+    # plot_model_prediction(path_file=path_file,data_root=dataset_dir_simo,model=nn.model)
