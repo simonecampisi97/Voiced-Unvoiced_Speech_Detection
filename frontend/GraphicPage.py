@@ -42,6 +42,7 @@ def plot_on_tab(figure, master):
 def create_frame_plot(tab):
     frame = tk.Frame(master=tab, height=HEIGHT_WINDOW - 55,
                      width=WIDTH_WINDOW - 215)
+
     frame.place(x=0, y=0)
     return frame
 
