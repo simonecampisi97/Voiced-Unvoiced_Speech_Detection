@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import DataLoader as dl
 import librosa
 import os
 from Frames import Frames
-from DataLoader import features_extraction
 
 
 def nextpow2(x):
@@ -57,7 +57,7 @@ def plot_pitches_pred(time, frames, pitches, prediction):
 def plot_model_prediction(path_file, data_root, model):
     y, fs = librosa.core.load(path_file, sr=48000)
     frames = Frames(y=y, fs=fs)
-    new_data = features_extraction(fs, y, gender_id=1)
+    new_data = dl.features_extraction(fs, y, gender_id=1)
     prediction = model.predict_classes(new_data)
     prediction = prediction.reshape((-1,))
     pitches = get_pitch(path_file, data_root)
