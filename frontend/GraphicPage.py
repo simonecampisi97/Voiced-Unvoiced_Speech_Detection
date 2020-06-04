@@ -14,6 +14,9 @@ from utils.support_funcion import plot_result, plot_model_prediction
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
+DATASET_DIR_SIMO = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+DATASET_DIR_ALE = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+
 
 def popup_message(msg):
     popup = tk.Tk()
@@ -124,16 +127,19 @@ class GraphicPage(tk.Frame):
         # time axis (milliseconds)
 
         nn = Net()
-        nn.load_model()
-        nn.load_weights()
-        nn.compile()
-        dataset_dir_simo = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
-        dataset_dir_ale = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+
         try:
-            figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=dataset_dir_ale)
+            nn.load_model()
+            nn.load_weights()
+        except FileNotFoundError:
+            popup_message('MODEL NOT FOUND!')
+            return
+        nn.compile()
+        try:
+            figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=DATASET_DIR_ALE)
         except FileNotFoundError:
             try:
-                figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=dataset_dir_simo)
+                figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=DATASET_DIR_SIMO)
             except FileNotFoundError:
                 figure = plot_model_prediction(path_file=self.file_path, model=nn.model)
 
