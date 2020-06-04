@@ -14,6 +14,9 @@ from utils.support_funcion import plot_result, plot_model_prediction
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
+DATASET_DIR_SIMO = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+DATASET_DIR_ALE = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+
 
 def popup_message(msg):
     popup = tk.Tk()
@@ -39,6 +42,7 @@ def plot_on_tab(figure, master):
 def create_frame_plot(tab):
     frame = tk.Frame(master=tab, height=HEIGHT_WINDOW - 55,
                      width=WIDTH_WINDOW - 215)
+
     frame.place(x=0, y=0)
     return frame
 
@@ -54,8 +58,10 @@ class GraphicPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         self.file_path = ""
+        self.folder_path = ""
         self.bg = BACK_GROUND_COLOR
         self.font_label = self.title_font = tkfont.Font(family='Helvetica', size=10, weight="bold", slant="italic")
+        self.font = tkfont.Font(family='Helvetica', size=7)
 
         self.controller.back_button.configure(command=self.controller.go_menu)
         # --------------------------------------------------------------------------------------------------
@@ -67,10 +73,30 @@ class GraphicPage(tk.Frame):
 
         self.upload_button = tk.Button(master=self, text='File Explorer',
                                        height=1, width=10, relief='groove', activebackground=BACK_GROUND_COLOR,
-                                       bg=BACK_GROUND_COLOR, command=self.upload_file).place(x=80, y=45)
+                                       bg=BACK_GROUND_COLOR, command=self.upload_file_audio).place(x=80, y=45)
 
-        self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50,
-                                       width=WIDTH_WINDOW - 210)
+        self.plot_button = tk.Button(master=self, text='Plot', activebackground=BACK_GROUND_COLOR,
+                                     height=1, width=10, relief='groove',
+                                     bg=BACK_GROUND_COLOR, command=self.plot_signal).place(x=80, y=180)
+
+        self.model_evaluation_frame = tk.LabelFrame(master=self, text='Model Evaluation', font=self.font_label,
+                                                    height=200,
+                                                    width=130, borderwidth=2, relief='flat',
+                                                    highlightbackground="black",
+                                                    highlightcolor="black", highlightthickness=1,
+                                                    bg=BACK_GROUND_COLOR).place(x=60, y=250)
+
+        self.label_choose_folder = tk.Label(master=self, text='Choose Test Folder:',
+                                            bg=BACK_GROUND_COLOR).place(x=67, y=275)
+        self.upload_button_acc = tk.Button(master=self, text='File Explorer',
+                                           height=1, width=10, relief='groove', activebackground=BACK_GROUND_COLOR,
+                                           bg=BACK_GROUND_COLOR, command=self.select_folder).place(x=80, y=300)
+
+        self.evluate_button = tk.Button(master=self, text='Evaluate', activebackground=BACK_GROUND_COLOR,
+                                        height=1, width=10, relief='groove',
+                                        bg=BACK_GROUND_COLOR, command=self.evaluate_model).place(x=80, y=460)
+
+        self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50, width=WIDTH_WINDOW - 210)
 
         self.tab_VUV = ttk.Frame(self.tabControl)
         self.frame_plot = create_frame_plot(tab=self.tab_VUV)
@@ -94,18 +120,26 @@ class GraphicPage(tk.Frame):
         self.tabControl.add(self.tab_hnr, text='st-hnr')
         self.tabControl.add(self.tab_energy, text='st-energy')
 
-        self.plot_button = tk.Button(master=self, text='Plot', activebackground=BACK_GROUND_COLOR,
-                                     height=1, width=10, relief='groove',
-                                     bg=BACK_GROUND_COLOR, command=self.plot_signal).place(x=80, y=180)
-
-    def upload_file(self):
+    def upload_file_audio(self):
         self.file_path = filedialog.askopenfilename(title="Select Audio File",
                                                     filetypes=(("wav files", "*.wav"), ("all files", "*.*")))
-        font = tkfont.Font(family='Helvetica', size=7)
         var = tk.StringVar()
         text_label = tk.Message(master=self, relief='groove', width=100,
-                                textvariable=var, font=font).place(x=70, y=75)
+                                textvariable=var, font=self.font).place(x=70, y=75)
         var.set(str(self.file_path).split('/')[-1])
+
+    def select_folder(self):
+
+        self.folder_path = filedialog.askdirectory(title="Choose Test Directory")
+
+        var = tk.StringVar()
+        label = tk.Label(master=self, text='Data Folder:', bg=BACK_GROUND_COLOR).place(x=70, y=330)
+        text_label_ = tk.Message(master=self, relief='groove', width=100,
+                                 textvariable=var, font=self.font).place(x=140, y=330)
+        var.set(str(self.folder_path).split('/')[-1])
+
+    def evaluate_model(self):
+        pass
 
     def plot_signal(self):
         self.frame_plot = update_frame_plot(self.frame_plot, tab=self.tab_VUV)
@@ -124,11 +158,22 @@ class GraphicPage(tk.Frame):
         # time axis (milliseconds)
 
         nn = Net()
-        nn.load_model()
-        nn.load_weights()
+
+        try:
+            nn.load_model()
+            nn.load_weights()
+        except FileNotFoundError:
+            popup_message('MODEL NOT FOUND!')
+            return
         nn.compile()
-        dataset_dir_simo = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
-        figure = plot_model_prediction(path_file=self.file_path, model=nn.model)
+        try:
+            figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=DATASET_DIR_ALE)
+        except FileNotFoundError:
+            try:
+                figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=DATASET_DIR_SIMO)
+            except FileNotFoundError:
+                figure = plot_model_prediction(path_file=self.file_path, model=nn.model)
+
         plot_on_tab(figure=figure, master=self.frame_plot)
 
         figure2 = plt.Figure(figsize=(9, 5), dpi=90)
