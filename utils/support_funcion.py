@@ -1,8 +1,10 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from DataLoader import features_extraction
-import librosa
 import os
+
+import librosa
+import matplotlib.pyplot as plt
+import numpy as np
+
+from DataLoader import features_extraction
 from Frames import Frames
 
 
@@ -85,3 +87,13 @@ def plot_model_prediction(path_file, model, data_root=None):
         ax_2.legend(['Pitches', 'Voiced-Region'])
 
     return figure
+
+
+# Standardizing the data
+def standardize_dataset(X):
+    dataset_mean = np.mean(X, axis=0)  # Computing the dataset mean
+    dataset_std = np.std(X, axis=0)  # Computing the dataset standard deviation
+
+    X_std = (X - dataset_mean) / dataset_std
+
+    return X_std, dataset_std, dataset_std

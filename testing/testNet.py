@@ -1,16 +1,14 @@
 import time
 
 import matplotlib.pyplot as plt
+import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping
-
-import numpy as np
 
 from DataLoader import DataLoader
 from DataSet import DataSet
 from Net import Net
 from utils.saveVariable import save_var, load_var
-import tensorflow as tf
 
 
 def plot_history(history):
@@ -35,18 +33,6 @@ def plot_history(history):
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Val'], loc='upper left')
     plt.show()
-
-
-def standardize_dataset(Xtr, Xte=None):
-    dataset_mean = np.mean(Xtr, axis=0)  # Computing the dataset mean
-    dataset_std = np.std(Xtr, axis=0)  # Computing the dataset standard deviation
-
-    X_train_norm = (Xtr - dataset_mean) / dataset_std
-    if Xte is not None:
-        X_test_norm = (Xte - dataset_mean) / dataset_std
-        return X_train_norm, X_test_norm
-    else:
-        return X_train_norm
 
 
 if __name__ == "__main__":
