@@ -128,7 +128,15 @@ class GraphicPage(tk.Frame):
         nn.load_weights()
         nn.compile()
         dataset_dir_simo = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
-        figure = plot_model_prediction(path_file=self.file_path, model=nn.model)
+        dataset_dir_ale = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+        try:
+            figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=dataset_dir_ale)
+        except FileNotFoundError:
+            try:
+                figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=dataset_dir_simo)
+            except FileNotFoundError:
+                figure = plot_model_prediction(path_file=self.file_path, model=nn.model)
+
         plot_on_tab(figure=figure, master=self.frame_plot)
 
         figure2 = plt.Figure(figsize=(9, 5), dpi=90)

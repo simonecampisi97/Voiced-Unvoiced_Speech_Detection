@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from DataLoader import features_extraction
+import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
 import librosa
 import os
 from Frames import Frames
@@ -23,10 +25,10 @@ def plot_segments(time, frames, prediction, ax):
         idx = i * frames.shift_length
         if frame_labeled == 1:
             ax.axvspan(xmin=time[idx], xmax=time[idx + frames.frame_length - 1], ymin=-1000, ymax=1000,
-                       alpha=0.2, zorder=-100, facecolor='g', label='Voiced-Prediction')
+                       alpha=0.2, zorder=-100, facecolor='green')
         else:
             ax.axvspan(xmin=time[idx], xmax=time[idx + frames.frame_length - 1], ymin=-1000, ymax=1000,
-                       alpha=0.2, zorder=-100, facecolor='r', label='Unvoiced-Prediction')
+                       alpha=0.2, zorder=-100, facecolor='red')
 
 
 # root: folder dataset SPEECH_DATA
@@ -61,7 +63,8 @@ def plot_pitches_prediction(time, frames, pitches, prediction, ax):
 # the path of dataset (if is available)
 # and plot the results
 def plot_model_prediction(path_file, model, data_root=None):
-    figure = plt.Figure(figsize=(9, 5), dpi=90)
+    figure = plt.Figure(figsize=(9, 6), dpi=90)
+    figure.suptitle('VUV predicion', fontsize=15)
     if data_root is not None:
         ax_1 = figure.add_subplot(211)
     else:
@@ -75,13 +78,25 @@ def plot_model_prediction(path_file, model, data_root=None):
 
     time = np.arange(len(y)) * 1000 / fs
     plot_segments(time, frames, prediction, ax=ax_1)
-    ax_1.plot(time, y, label='Signal')
-    ax_1.legend(['Signal', 'Voiced-Region'])
+    ax_1.plot(time, y, c='b')
+    blue_line = mlines.Line2D([], [], color='blue',
+                              markersize=15, label='Signal')
+
+    legend = [blue_line, mpatches.Patch(label='Voiced-Prediction', color='green', alpha=.2),
+              mpatches.Patch(label='Unvoiced-Prediction', color='red', alpha=.2)]
+
+    ax_1.legend(handles=legend, loc='best')
+    # ax_1.legend(['Signal', 'Voiced-Prediction', 'Unvoiced-Prediction'], loc='best')
 
     if data_root is not None:
         pitches = get_pitch(path_file, data_root)
         ax_2 = figure.add_subplot(212)
         plot_pitches_prediction(time, frames, pitches, prediction, ax=ax_2)
-        ax_2.legend(['Pitches', 'Voiced-Region'])
+        blue_line = mlines.Line2D([], [], color='blue',
+                                  markersize=15, label='Pitches')
+        legend2 = [blue_line, mpatches.Patch(label='Voiced-Prediction', color='green', alpha=.2),
+                   mpatches.Patch(label='Unvoiced-Prediction', color='red', alpha=.2)]
+
+        ax_2.legend(handles=legend2, loc='best')
 
     return figure
