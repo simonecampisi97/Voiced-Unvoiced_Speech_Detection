@@ -73,8 +73,12 @@ class GraphicPage(tk.Frame):
                                        height=1, width=10, relief='groove', activebackground=BACK_GROUND_COLOR,
                                        bg=BACK_GROUND_COLOR, command=self.upload_file).place(x=80, y=45)
 
-        self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50,
-                                       width=WIDTH_WINDOW - 210)
+        self.model_evaluation = tk.LabelFrame(master=self, text='Model Evaluation', font=self.font_label, height=150,
+                                              width=130, borderwidth=2, relief='flat', highlightbackground="black",
+                                              highlightcolor="black", highlightthickness=1,
+                                              bg=BACK_GROUND_COLOR).place(x=60, y=250)
+
+        self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50, width=WIDTH_WINDOW - 210)
 
         self.tab_VUV = ttk.Frame(self.tabControl)
         self.frame_plot = create_frame_plot(tab=self.tab_VUV)
