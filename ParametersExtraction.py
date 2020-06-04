@@ -1,10 +1,8 @@
 import librosa
 import matplotlib.pyplot as plt
 import numpy as np
-import python_speech_features
 from Signal_Analysis.features.signal import get_HNR
-from utils.support_funcion import *
-from scipy.io import wavfile
+from utils.support_funcion import nextpow2
 
 from Frames import Frames
 

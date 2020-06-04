@@ -11,7 +11,6 @@ from DataSet import DataSet
 from Net import Net
 from utils.saveVariable import save_var, load_var
 import tensorflow as tf
-from utils.support_funcion import plot_model_prediction
 
 
 def plot_history(history):
@@ -55,7 +54,7 @@ if __name__ == "__main__":
     dataset_dir_ale = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
 
     try:
-        ds = load_var("./dataset.save")
+        ds = load_var("dataset.save")
     except FileNotFoundError:
         try:
             dl = DataLoader(dataset_dir_ale)
@@ -63,7 +62,7 @@ if __name__ == "__main__":
             dl = DataLoader(dataset_dir_simo)
         time.sleep(0.01)
         ds = DataSet(dl)
-        save_var(ds, "./dataset.save")
+        save_var(ds, "dataset.save")
 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
@@ -77,7 +76,7 @@ if __name__ == "__main__":
     print('Train:', X_train.shape)
     print('Test: ', X_test.shape)
 
-    nn = Net(ds.features.shape[1])
+    nn = Net(inputSize=ds.features.shape[1])
     start = time.time()
 
     try:
@@ -101,6 +100,3 @@ if __name__ == "__main__":
     # print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))
 
     # test on single file
-    path_file = 'C:\\Users\\simoc\\SPR_Project\\TestData\\mic_M03_sa1.wav'
-
-    plot_model_prediction(path_file=path_file, data_root=dataset_dir_simo, model=nn.model)

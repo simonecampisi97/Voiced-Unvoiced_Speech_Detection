@@ -4,13 +4,13 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.models import model_from_json
 
-MODEL_PATH = "Model/model_nn.json"
-WEIGHTS_PATH = "Model/model_weights.h5"
+MODEL_PATH = "saved_model/model.json"
+WEIGHTS_PATH = "saved_model/model.h5"
 
 
 class Net:
 
-    def __init__(self, inputSize, outputSize=1):
+    def __init__(self, inputSize=18, outputSize=1):
         self.hiddenSize = 3
 
         self.model = Sequential([Dense(30, activation="relu", input_shape=(inputSize,)),
@@ -24,19 +24,19 @@ class Net:
 
     def serialize_model(self):
         model_json = self.model.to_json()
-        with open("model.json", "w") as json_file:
+        with open(MODEL_PATH, "w") as json_file:
             json_file.write(model_json)
 
     def serialize_weights(self):
-        self.model.save_weights("model.h5")
+        self.model.save_weights(WEIGHTS_PATH)
         print("Saved model to disk")
 
     def load_model(self):
-        json_file = open('model.json', 'r')
+        json_file = open(MODEL_PATH, 'r')
         loaded_model_json = json_file.read()
         json_file.close()
         self.model = model_from_json(loaded_model_json)
 
     def load_weights(self):
-        self.model.load_weights("model.h5")
+        self.model.load_weights(WEIGHTS_PATH)
         print("Loaded model from disk")
