@@ -11,7 +11,7 @@ if __name__ == "__main__":
     dataset_dir = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
 
     try:
-        ds = load_var("./dataset.save")
+        ds = load_var("dataset.save")
         print('Dataset loaded from a local file')
     except FileNotFoundError:
         print('Creating the dataset:', flush=True)
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         print("\t-Extracting features from row data...", flush=True)
         time.sleep(0.01)
         ds = DataSet(dl)
-        save_var(ds, "./dataset.save")
+        save_var(ds, "dataset.save")
         print("\t-Dataset saved as local file")
 
     print()

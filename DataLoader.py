@@ -4,7 +4,7 @@ import librosa
 import numpy as np
 
 from Frames import Frames
-from ParametersExtraction import st_energy, st_zcr, st_magnitude, MFCC
+import ParametersExtraction as pe
 
 
 def label_extraction(file_name):
@@ -17,14 +17,14 @@ def label_extraction(file_name):
 
 def features_extraction(rate, data, gender_id):
     frames = Frames(data, rate)
-    feature = [st_energy(frames),
-               st_magnitude(frames),
-               st_zcr(frames)]  # energy, ZCR, MFCC(13), gender(2)
+    feature = [pe.st_energy(frames),
+               pe.st_magnitude(frames),
+               pe.st_zcr(frames)]  # energy, ZCR, MFCC(13), gender(2)
 
     gender = np.zeros((2, len(frames)), dtype=np.float32)
     gender[gender_id] = 1.
 
-    mfcc = MFCC(signal=data, frames=frames)
+    mfcc = pe.MFCC(signal=data, frames=frames)
 
     return np.concatenate((np.array(feature, dtype=np.float32), gender, mfcc)).T
 

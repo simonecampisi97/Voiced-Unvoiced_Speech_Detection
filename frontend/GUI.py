@@ -1,5 +1,4 @@
 import tkinter as tk
-import tkinter as ttk
 from tkinter import font as tkfont
 from frontend.HomePage import HomePage
 from frontend.GraphicPage import GraphicPage

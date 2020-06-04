@@ -1,16 +1,15 @@
 import tkinter as tk
-from frontend.Settings import *
-from frontend.HomePage import HomePage
-from tkinter import font as tkfont
 import tkinter.ttk as ttk
+from frontend.Settings import *
+from tkinter import font as tkfont
 from tkinter import filedialog
 import matplotlib.pyplot as plt
-import matplotlib
-from scipy.io import wavfile
-import numpy as np
 from Frames import Frames
-from utils.support_funcion import *
-from ParametersExtraction import *
+import librosa
+import matplotlib
+from Net import Net
+import ParametersExtraction as pe
+from utils.support_funcion import plot_result, plot_model_prediction
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -120,17 +119,16 @@ class GraphicPage(tk.Frame):
             return
 
         # read wav file
-        fs, y = wavfile.read(self.file_path)
+        y, fs = librosa.load(self.file_path)
         frames = Frames(fs=fs, y=y)
         # time axis (milliseconds)
-        time = np.arange(len(y)) * 1000 * (1 / fs)
 
-        figure = plt.Figure(figsize=(9, 5), dpi=90)
-        ax = figure.add_subplot(111)
-        ax.plot(time, y, ms=0.2)
-        ax.set_title('Voiced/Unvoiced Prediction', fontsize=20)
-        ax.set_xlabel('time(milliseconds)')
-        ax.set_ylabel('signal')
+        nn = Net()
+        nn.load_model()
+        nn.load_weights()
+        nn.compile()
+        dataset_dir_simo = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+        figure = plot_model_prediction(path_file=self.file_path, model=nn.model)
         plot_on_tab(figure=figure, master=self.frame_plot)
 
         figure2 = plt.Figure(figsize=(9, 5), dpi=90)
@@ -138,7 +136,7 @@ class GraphicPage(tk.Frame):
         ax2.set_title('Short-Time Zero Crossing Rate', fontsize=20)
         ax2.set_xlabel('frame_time')
         ax2.set_ylabel('zcr')
-        zcr = st_zcr(frames)
+        zcr = pe.st_zcr(frames)
         plot_result(signal=zcr, Frames=frames, ax=ax2)
         plot_on_tab(figure=figure2, master=self.frame_plot2)
 
@@ -147,7 +145,7 @@ class GraphicPage(tk.Frame):
         ax3.set_title('Short-Time Magnitude', fontsize=20)
         ax3.set_xlabel('frame_time')
         ax3.set_ylabel('magnitude')
-        mag = st_magnitude(frames)
+        mag = pe.st_magnitude(frames)
         plot_result(signal=mag, Frames=frames, ax=ax3)
         plot_on_tab(figure=figure3, master=self.frame_plot3)
 
@@ -156,7 +154,7 @@ class GraphicPage(tk.Frame):
         ax4.set_title('Short-Time Harmonic-To-Noise Ratio', fontsize=20)
         ax4.set_xlabel('frame_time')
         ax4.set_ylabel('hnr')
-        hnr = st_HNR(frames)
+        hnr = pe.st_HNR(frames)
         plot_result(signal=hnr, Frames=frames, ax=ax4)
         plot_on_tab(figure=figure4, master=self.frame_plot4)
 
@@ -165,6 +163,6 @@ class GraphicPage(tk.Frame):
         ax5.set_title('Short-Time Energy', fontsize=20)
         ax5.set_xlabel('frame_time')
         ax5.set_ylabel('energy')
-        energy = st_energy(frames)
+        energy = pe.st_energy(frames)
         plot_result(signal=energy, Frames=frames, ax=ax5)
         plot_on_tab(figure=figure5, master=self.frame_plot5)
