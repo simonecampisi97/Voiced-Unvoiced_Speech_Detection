@@ -5,6 +5,7 @@ import matplotlib.lines as mlines
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import signal
 
 from DataLoader import features_extraction
 from Frames import Frames
@@ -33,7 +34,7 @@ def plot_segments(time, frames, prediction, ax):
                        alpha=0.2, zorder=-100, facecolor='red')
 
 
-# root: folder dataset SPEECH_DATA
+# root: folder dataset
 def get_pitch(absolute_audio_path, root):
     filename = absolute_audio_path.split('/')[-1]
     filename_splitted = filename.split('_')
@@ -112,3 +113,16 @@ def standardize_dataset(X):
     X_std = (X - dataset_mean) / dataset_std
 
     return X_std, dataset_std, dataset_std
+
+
+def butter_highpass(cutoff, fs, order=4):
+    nyq = 0.5 * fs
+    normal_cutoff = cutoff / nyq
+    b, a = signal.butter(order, normal_cutoff, btype='high', analog=False, output='ba')
+    return b, a
+
+
+def butter_highpass_filter(data, cutoff, fs, order=4):
+    b, a = butter_highpass(cutoff, fs, order=order)
+    y = signal.filtfilt(b, a, data)
+    return y
