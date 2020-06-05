@@ -195,7 +195,7 @@ class NeuralNetwork:
         pyplot.title('Neural Network architecture', fontsize=15)
         # figureName = 'ANN_' + strftime("%Y%m%d_%H%M%S", localtime()) + '.png'
         # pyplot.savefig(figureName, dpi=300, bbox_inches="tight")
-        pyplot.show()
+        # pyplot.show()
 
 
 class DrawNN:

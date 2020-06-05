@@ -9,9 +9,8 @@ import librosa
 import matplotlib
 from Net import Net
 import ParametersExtraction as pe
-from utils.support_funcion import plot_result, plot_model_prediction
+from utils.support_funcion import plot_result, plot_model_prediction, visualizeNN
 import utils.model_evaluation as me
-
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
@@ -122,7 +121,8 @@ class GraphicPage(tk.Frame):
 
         self.evaluate_button = tk.Button(master=self, text='Evaluate', activebackground=BACK_GROUND_COLOR,
                                          height=1, width=10, relief='groove',
-                                         bg=BACK_GROUND_COLOR, command=self.evaluate_model).place(x=80, y=460)
+                                         bg=BACK_GROUND_COLOR,
+                                         command=self.evaluate_model).place(x=80, y=460)
 
         self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50, width=WIDTH_WINDOW - 210)
 
@@ -141,12 +141,16 @@ class GraphicPage(tk.Frame):
         self.tab_energy = ttk.Frame(self.tabControl)
         self.frame_plot5 = create_frame_plot(tab=self.tab_energy)
 
+        self.tab_nn = ttk.Frame(self.tabControl)
+        self.frame_plot6 = create_frame_plot(tab=self.tab_nn)
+
         self.tabControl.place(x=200, y=20)
         self.tabControl.add(self.tab_VUV, text='VUV')
         self.tabControl.add(self.tab_zcr, text='st-zcr')
         self.tabControl.add(self.tab_mag, text='st-magnitude')
         self.tabControl.add(self.tab_hnr, text='st-hnr')
         self.tabControl.add(self.tab_energy, text='st-energy')
+        self.tabControl.add(self.tab_nn, text='Neural Network')
 
     def select_male(self):
         self.gender = 1
@@ -187,18 +191,15 @@ class GraphicPage(tk.Frame):
         self.folder_path = self.folder_path.replace('/', '\\')
 
         try:
+
             ds, file_num, frame_num = me.load_evaluation_data(self.folder_path)
         except FileNotFoundError as err:
             error = str(err).split(':', 1)
             popup_message(error[0] + ':\n\n\n' + error[1], font=font_not_found, h=200, w=400)
             return
 
-        label_evaluating = tk.Label(master=self, text='Evaluating model on test...',
-                                  bg=BACK_GROUND_COLOR, font=font_eval)
-        label_evaluating.place(x=80, y=400)
-
         accuracy, loss = me.evaluate_model(self.nn.model, ds)
-        label_evaluating.destroy()
+
         accuracy = round(accuracy * 100, 2)
         loss = round(loss, 2)
 
@@ -213,6 +214,7 @@ class GraphicPage(tk.Frame):
         self.frame_plot3 = update_frame_plot(self.frame_plot3, tab=self.tab_mag)
         self.frame_plot4 = update_frame_plot(self.frame_plot4, tab=self.tab_hnr)
         self.frame_plot5 = update_frame_plot(self.frame_plot5, tab=self.tab_energy)
+        self.frame_plot6 = update_frame_plot(self.frame_plot6, tab=self.tab_nn)
 
         if self.file_path == "":
             popup_message("Upload The file first!", font=self.font_pop)
@@ -227,7 +229,8 @@ class GraphicPage(tk.Frame):
         # time axis (milliseconds)
         print(self.gender)
         try:
-            figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender, data_root=DATASET_DIR_ALE)
+            figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender,
+                                           data_root=DATASET_DIR_ALE)
         except (FileNotFoundError, IndexError):
             try:
                 figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender,
@@ -272,3 +275,8 @@ class GraphicPage(tk.Frame):
         energy = pe.st_energy(frames)
         plot_result(signal=energy, Frames=frames, ax=ax5)
         plot_on_tab(figure=figure5, master=self.frame_plot5)
+
+        figure6 = plt.Figure(figsize=(9, 5), dpi=90)
+        plt.subplot(111)
+        visualizeNN(self.nn.model, 18)
+

@@ -25,3 +25,4 @@ def evaluate_model(model: Sequential, testSet: DataSet, verbose=2):
     loss = results[0]
 
     return accuracy, loss
+
