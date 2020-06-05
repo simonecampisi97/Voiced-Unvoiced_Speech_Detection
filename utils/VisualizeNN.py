@@ -15,10 +15,12 @@ class Neuron:
         self.x = x
         self.y = y
 
-    def draw(self, neuron_radius, id=-1):
+    def draw(self, neuron_radius, id=-1, label=None):
         circle = pyplot.Circle((self.x, self.y), radius=neuron_radius, fill=False)
         pyplot.gca().add_patch(circle)
         pyplot.gca().text(self.x, self.y - 0.15, str(id), size=10, ha='center')
+        if label is not None:
+            pyplot.gca().text(self.x, self.y - 1.5, label, size=8, ha='center', va='top')
 
 
 class Layer:
@@ -102,11 +104,12 @@ class Layer:
                              (neuron1.y - y_adjustment, neuron2.y + y_adjustment), linewidth=linewidth, color=color)
         pyplot.gca().add_line(line)
 
-    def draw(self, layerType=0, weights=None, textoverlaphandler=None):
+    def draw(self, layerType=0, weights=None, textoverlaphandler=None, input_label=None):
         j = 0  # index for neurons in this layer
-        for neuron in self.neurons:
+        for k, neuron in enumerate(self.neurons):
             i = 0  # index for neurons in previous layer
-            neuron.draw(self.neuron_radius, id=j + 1)
+            neuron_label = input_label[k] if input_label is not None else None
+            neuron.draw(self.neuron_radius, id=j + 1, label=neuron_label)
             if self.previous_layer:
                 for previous_layer_neuron in self.previous_layer.neurons:
                     self.__line_between_two_neurons(neuron, previous_layer_neuron, weights[i, j], textoverlaphandler)
@@ -160,7 +163,7 @@ class NeuralNetwork:
         layer = Layer(self, number_of_neurons, self.number_of_neurons_in_widest_layer)
         self.layers.append(layer)
 
-    def draw(self, weights_list=None):
+    def draw(self, weights_list=None, input_label=None):
         # vertical_distance_between_layers and horizontal_distance_between_neurons are the same with the variables of
         # the same name in layer class
         vertical_distance_between_layers = 6
@@ -173,7 +176,7 @@ class NeuralNetwork:
         for i in range(len(self.layers)):
             layer = self.layers[i]
             if i == 0:
-                layer.draw(layerType=0)
+                layer.draw(layerType=0, input_label=input_label)
             elif i == len(self.layers) - 1:
                 layer.draw(layerType=-1, weights=weights_list[i - 1], textoverlaphandler=overlaphandler)
             else:
@@ -192,7 +195,8 @@ class DrawNN:
     # a neural network of 5 nerons in the input layer, 10 neurons in the hidden layer 1 and 1 neuron in the output
     # layer is [5, 10, 1] para: weights_list (optional) is the output weights list of a neural network which can be
     # obtained via classifier.coefs_
-    def __init__(self, neural_network, weights_list=None):
+    def __init__(self, neural_network, weights_list=None, input_label=None):
+        self.input_label = input_label
         self.neural_network = neural_network
         self.weights_list = weights_list
         # if weights_list is none, then create a uniform list to fill the weights_list
@@ -209,4 +213,4 @@ class DrawNN:
         network = NeuralNetwork(widest_layer)
         for l in self.neural_network:
             network.add_layer(l)
-        network.draw(self.weights_list)
+        network.draw(self.weights_list, self.input_label)

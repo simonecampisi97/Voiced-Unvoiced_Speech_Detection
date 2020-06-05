@@ -57,7 +57,10 @@ def visualizeNN(model, input_shape):
                 weights[i][j] = weights[i][j] / curr_max
         weights_list.append(weights)
 
-    network = VisNN.DrawNN(network_structure, weights_list)
+    feature_name = ['E','MG','ZRC','MFCC\n(1)', 'MFCC\n(2)', 'MFCC\n(3)', 'MFCC\n(4)', 'MFCC\n(5)', 'MFCC\n(6)', 'MFCC\n(7)',
+                    'MFCC\n(8)', 'MFCC\n(9)', 'MFCC\n(10)', 'MFCC\n(11)', 'MFCC\n(12)', 'MFCC\n(13)', 'FEMALE', 'MALE']
+
+    network = VisNN.DrawNN(network_structure, weights_list, feature_name)
     network.draw()
 
 
