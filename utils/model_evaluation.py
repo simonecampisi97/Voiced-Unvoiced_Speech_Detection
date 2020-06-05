@@ -24,6 +24,4 @@ def evaluate_model(model: Sequential, testSet: DataSet, verbose=2):
     accuracy = results[-1]
     loss = results[0]
 
-    print(model.metrics)
-
     return accuracy, loss

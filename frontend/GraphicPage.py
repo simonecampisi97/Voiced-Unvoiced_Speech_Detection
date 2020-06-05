@@ -19,13 +19,13 @@ DATASET_DIR_SIMO = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA
 DATASET_DIR_ALE = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
 
 
-def popup_message(msg):
+def popup_message(msg, font, w=250, h=150):
     popup = tk.Tk()
     popup.resizable(RESIZABLE, RESIZABLE)
     popup.configure(bg=BACK_GROUND_COLOR)
-    popup.geometry('250x150')
+    popup.geometry(str(w) + 'x' + str(h))
     popup.wm_title("ERROR!")
-    font = tkfont.Font(family='arial black', size=20, weight="bold")
+
     label = tk.Label(master=popup, text=msg, font=font, bg=BACK_GROUND_COLOR)
     label.pack(pady=20)
     B1 = ttk.Button(popup, text="exit", command=popup.destroy)
@@ -60,9 +60,15 @@ class GraphicPage(tk.Frame):
         self.controller = controller
         self.file_path = ""
         self.folder_path = ""
+        self.message_select_folder = tk.Message(master=self, relief='groove', width=100, bg=BACK_GROUND_COLOR)
+        self.message_select_folder.place(x=70, y=350)
+
+        self.message_select_audio = tk.Message(master=self, relief='groove', width=100, bg=BACK_GROUND_COLOR)
+        self.message_select_audio.place(x=70, y=75)
         self.bg = BACK_GROUND_COLOR
         self.font_label = self.title_font = tkfont.Font(family='Helvetica', size=10, weight="bold", slant="italic")
         self.font = tkfont.Font(family='Helvetica', size=7)
+        self.font_pop = tkfont.Font(family='arial black', size=20, weight="bold")
 
         self.nn = Net()
 
@@ -70,7 +76,7 @@ class GraphicPage(tk.Frame):
             self.nn.load_model()
             self.nn.load_weights()
         except FileNotFoundError:
-            popup_message('MODEL NOT FOUND!')
+            popup_message('MODEL NOT FOUND!', font=self.font_pop)
             return
         self.nn.compile()
 
@@ -135,8 +141,10 @@ class GraphicPage(tk.Frame):
         self.file_path = filedialog.askopenfilename(title="Select Audio File",
                                                     filetypes=(("wav files", "*.wav"), ("all files", "*.*")))
         var = tk.StringVar()
-        text_label = tk.Message(master=self, relief='groove', width=100,
-                                textvariable=var, font=self.font).place(x=70, y=75)
+        self.message_select_audio.destroy()
+        self.message_select_audio = tk.Message(master=self, relief='groove', width=100,
+                                               textvariable=var, font=self.font)
+        self.message_select_audio.place(x=70, y=75)
         var.set(str(self.file_path).split('/')[-1])
 
     def select_folder(self):
@@ -145,25 +153,32 @@ class GraphicPage(tk.Frame):
 
         var = tk.StringVar()
         label = tk.Label(master=self, text='Data Folder:', bg=BACK_GROUND_COLOR).place(x=70, y=330)
-        text_label_ = tk.Message(master=self, relief='groove', width=100,
-                                 textvariable=var, font=self.font).place(x=70, y=350)
+        self.message_select_folder.destroy()
+        self.message_select_folder = tk.Message(master=self, relief='groove', width=100,
+                                                textvariable=var, font=self.font)
+        self.message_select_folder.place(x=70, y=350)
         var.set(str(self.folder_path).split('/')[-1])
 
     def evaluate_model(self):
+
+        font_eval = tkfont.Font(family='Calibre', size=9, weight='bold')
+        font_not_found = tkfont.Font(family='Calibre', size=5, weight='bold')
+
         if self.folder_path == "":
-            popup_message("Select a test folder first!")
+            popup_message("Select a test folder first!", font=self.font_pop)
             return
-        ds = None
+        self.folder_path = self.folder_path.replace('/', '\\')
+
         try:
             ds, file_num, frame_num = me.load_evaluation_data(self.folder_path)
-        except FileNotFoundError:
-            popup_message("The selected folder is not correct.")
-
+        except FileNotFoundError as err:
+            error = str(err).split(':', 1)
+            popup_message(error[0] + ':\n\n\n' + error[1], font=font_not_found, h=200, w=400)
+            return
         accuracy, loss = me.evaluate_model(self.nn.model, ds)
-        accuracy = 0.958452
-        accuracy = round(accuracy*100, 2)
-        loss = 0.132
-        font_eval = tkfont.Font(family='Calibre', size=9, weight='bold')
+        accuracy = round(accuracy * 100, 2)
+        loss = round(loss, 2)
+
         label_accuracy = tk.Label(master=self, text='ACCURACY: ' + str(accuracy) + '%',
                                   bg=BACK_GROUND_COLOR, font=font_eval).place(x=66, y=380)
         loss_label = tk.Label(master=self, text='LOSS: ' + str(loss),
@@ -177,7 +192,7 @@ class GraphicPage(tk.Frame):
         self.frame_plot5 = update_frame_plot(self.frame_plot5, tab=self.tab_energy)
 
         if self.file_path == "":
-            popup_message("Upload The file first!")
+            popup_message("Upload The file first!", font=self.font_pop)
             return
 
         # read wav file
