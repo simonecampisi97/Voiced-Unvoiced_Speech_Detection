@@ -88,3 +88,12 @@ def plot_model_prediction(path_file, model, data_root=None):
 
     return figure
 
+
+# Standardizing the data
+def standardize_dataset(X):
+    dataset_mean = np.mean(X, axis=0)  # Computing the dataset mean
+    dataset_std = np.std(X, axis=0)  # Computing the dataset standard deviation
+
+    X_std = (X - dataset_mean) / dataset_std
+
+    return X_std, dataset_std, dataset_std
