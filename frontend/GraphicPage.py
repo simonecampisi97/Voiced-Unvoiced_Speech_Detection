@@ -9,9 +9,8 @@ import librosa
 import matplotlib
 from Net import Net
 import ParametersExtraction as pe
-from utils.support_funcion import plot_result, plot_model_prediction
+from utils.support_funcion import plot_result, plot_model_prediction, visualizeNN
 import utils.model_evaluation as me
-import utils.VisualizeNN as VisNN
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -280,5 +279,5 @@ class GraphicPage(tk.Frame):
 
         figure6 = plt.Figure(figsize=(9, 5), dpi=90)
         plt.subplot(111)
-        #VisNN.visualizeNN(self.nn.model,18)
+        visualizeNN(self.nn.model, 18)
 
