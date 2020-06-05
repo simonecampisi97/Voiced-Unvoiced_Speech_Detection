@@ -19,6 +19,8 @@ DATASET_DIR_SIMO = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA
 DATASET_DIR_ALE = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
 
 
+
+
 def popup_message(msg, font, w=250, h=150):
     popup = tk.Tk()
     popup.resizable(RESIZABLE, RESIZABLE)
@@ -122,7 +124,8 @@ class GraphicPage(tk.Frame):
 
         self.evaluate_button = tk.Button(master=self, text='Evaluate', activebackground=BACK_GROUND_COLOR,
                                          height=1, width=10, relief='groove',
-                                         bg=BACK_GROUND_COLOR, command=self.evaluate_model).place(x=80, y=460)
+                                         bg=BACK_GROUND_COLOR,
+                                         command=self.evaluate_model).place(x=80, y=460)
 
         self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50, width=WIDTH_WINDOW - 210)
 
@@ -176,6 +179,7 @@ class GraphicPage(tk.Frame):
         self.message_select_folder.place(x=70, y=350)
         var.set(str(self.folder_path).split('/')[-1])
 
+
     def evaluate_model(self):
 
         font_eval = tkfont.Font(family='Calibre', size=9, weight='bold')
@@ -187,18 +191,15 @@ class GraphicPage(tk.Frame):
         self.folder_path = self.folder_path.replace('/', '\\')
 
         try:
+
             ds, file_num, frame_num = me.load_evaluation_data(self.folder_path)
         except FileNotFoundError as err:
             error = str(err).split(':', 1)
             popup_message(error[0] + ':\n\n\n' + error[1], font=font_not_found, h=200, w=400)
             return
 
-        label_evaluating = tk.Label(master=self, text='Evaluating model on test...',
-                                  bg=BACK_GROUND_COLOR, font=font_eval)
-        label_evaluating.place(x=80, y=400)
-
         accuracy, loss = me.evaluate_model(self.nn.model, ds)
-        label_evaluating.destroy()
+
         accuracy = round(accuracy * 100, 2)
         loss = round(loss, 2)
 
@@ -227,7 +228,8 @@ class GraphicPage(tk.Frame):
         # time axis (milliseconds)
         print(self.gender)
         try:
-            figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender, data_root=DATASET_DIR_ALE)
+            figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender,
+                                           data_root=DATASET_DIR_ALE)
         except (FileNotFoundError, IndexError):
             try:
                 figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender,
