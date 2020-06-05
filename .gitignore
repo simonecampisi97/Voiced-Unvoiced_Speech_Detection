@@ -130,4 +130,6 @@ dmypy.json
 
 .idea/
 !/testing/dataset.save
-!/testing/dataset.save
+!/.idea/
+!/.idea/misc.xml
+!/.idea/SPR_Project.iml
