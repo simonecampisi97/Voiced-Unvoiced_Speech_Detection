@@ -57,7 +57,7 @@ def visualizeNN(model, input_shape):
                 weights[i][j] = weights[i][j] / curr_max
         weights_list.append(weights)
 
-    feature_name = ['E','MG','ZRC','MFCC\n(1)', 'MFCC\n(2)', 'MFCC\n(3)', 'MFCC\n(4)', 'MFCC\n(5)', 'MFCC\n(6)', 'MFCC\n(7)',
+    feature_name = ['E', 'MG', 'ZRC', 'MFCC\n(1)', 'MFCC\n(2)', 'MFCC\n(3)', 'MFCC\n(4)', 'MFCC\n(5)', 'MFCC\n(6)', 'MFCC\n(7)',
                     'MFCC\n(8)', 'MFCC\n(9)', 'MFCC\n(10)', 'MFCC\n(11)', 'MFCC\n(12)', 'MFCC\n(13)', 'FEMALE', 'MALE']
 
     network = VisNN.DrawNN(network_structure, weights_list, feature_name)
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         # early stopping
         es_callback = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
 
-        history = nn.model.fit(X_train, y_train, batch_size=512, epochs=5, validation_split=0.3,
+        history = nn.model.fit(X_train, y_train, batch_size=512, epochs=20, validation_split=0.3,
                                verbose=2, callbacks=[es_callback])
         nn.serialize_model()
         nn.serialize_weights()

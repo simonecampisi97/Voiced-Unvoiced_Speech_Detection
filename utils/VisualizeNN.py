@@ -71,11 +71,13 @@ class Layer:
         # assign different line_widths to lines depending on the size of the weight
         abs_weight = abs(weight)
         if abs_weight > 0.5:
-            linewidth = 10 * abs_weight
+            linewidth = 4 * abs_weight
         elif abs_weight > 0.8:
-            linewidth = 100 * abs_weight
+            linewidth = 6 * abs_weight
         else:
-            linewidth = abs_weight
+            linewidth = 2 * abs_weight
+
+        # linewidth = abs_weight * 4
 
         # draw the weights and adjust the labels of weights to avoid overlapping
         if abs_weight > 0.5:
