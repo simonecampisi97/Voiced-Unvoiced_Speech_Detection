@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
 
-from DataLoader import features_extraction
+import DataLoader
 from Frames import Frames
 
 
@@ -75,7 +75,7 @@ def plot_model_prediction(path_file, model, data_root=None):
 
     y, fs = librosa.core.load(path_file, sr=48000)
     frames = Frames(y=y, fs=fs)
-    new_data = features_extraction(fs, y, gender_id=1)
+    new_data = DataLoader.features_extraction(fs, y, gender_id=1)
     prediction = model.predict_classes(new_data)
     prediction = prediction.reshape((-1,))
 

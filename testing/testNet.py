@@ -50,9 +50,9 @@ if __name__ == "__main__":
         ds = DataSet(dl)
         save_var(ds, "dataset.save")
 
-    config = tf.ConfigProto()
+    config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
-    session = tf.Session(config=config)
+    session = tf.compat.v1.Session(config=config)
 
     print()
     ds.info()
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         # early stopping
         es_callback = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
 
-        history = nn.model.fit(X_train, y_train, batch_size=512, epochs=15, validation_split=0.3,
+        history = nn.model.fit(X_train, y_train, batch_size=512, epochs=5, validation_split=0.3,
                                verbose=2, callbacks=[es_callback])
         nn.serialize_model()
         nn.serialize_weights()
