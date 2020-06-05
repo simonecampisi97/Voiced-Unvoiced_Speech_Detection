@@ -1,6 +1,6 @@
 import numpy as np
 
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, InputLayer
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.models import model_from_json
 
@@ -13,7 +13,8 @@ class Net:
     def __init__(self, inputSize=18, outputSize=1):
         self.hiddenSize = 3
 
-        self.model = Sequential([Dense(30, activation="relu", input_shape=(inputSize,)),
+        self.model = Sequential([InputLayer(input_shape=(inputSize,)),
+                                 Dense(16, activation="relu", input_shape=(inputSize,)),
                                  Dense(outputSize, activation="sigmoid")])
 
     def compile(self, optimizer='adam', loss='binary_crossentropy', metrics=None):

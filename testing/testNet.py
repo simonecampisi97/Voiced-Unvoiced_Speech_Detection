@@ -1,4 +1,8 @@
 import time
+import os
+import numpy as np
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import matplotlib.pyplot as plt
 import tensorflow as tf
@@ -9,6 +13,7 @@ from DataLoader import DataLoader
 from DataSet import DataSet
 from Net import Net
 from utils.saveVariable import save_var, load_var
+import utils.VisualizeNN as VisNN
 
 
 def plot_history(history):
@@ -33,6 +38,27 @@ def plot_history(history):
     plt.xlabel('Epoch')
     plt.legend(['Train', 'Val'], loc='upper left')
     plt.show()
+
+
+def visualizeNN(model, input_shape):
+    network_structure = [[input_shape]]
+
+    for layer in model.layers:
+        network_structure.append([layer.output_shape[1]])
+
+    network_structure = np.concatenate(network_structure)
+
+    weights_list = []
+    for layer in model.layers:
+        weights = layer.get_weights()[0]
+        curr_max = np.max(np.abs(np.array(weights)))
+        for i in range(len(weights)):
+            for j in range(len(weights[i])):
+                weights[i][j] = weights[i][j] / curr_max
+        weights_list.append(weights)
+
+    network = VisNN.DrawNN(network_structure, weights_list)
+    network.draw()
 
 
 if __name__ == "__main__":
@@ -86,3 +112,7 @@ if __name__ == "__main__":
     # print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))
 
     # test on single file
+
+    # ---------------------------------
+    # VISUALIZE NN
+    visualizeNN(nn.model, 18)
