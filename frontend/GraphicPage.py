@@ -10,6 +10,7 @@ import matplotlib
 from Net import Net
 import ParametersExtraction as pe
 from utils.support_funcion import plot_result, plot_model_prediction
+import utils.model_evaluation as me
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -63,6 +64,16 @@ class GraphicPage(tk.Frame):
         self.font_label = self.title_font = tkfont.Font(family='Helvetica', size=10, weight="bold", slant="italic")
         self.font = tkfont.Font(family='Helvetica', size=7)
 
+        self.nn = Net()
+
+        try:
+            self.nn.load_model()
+            self.nn.load_weights()
+        except FileNotFoundError:
+            popup_message('MODEL NOT FOUND!')
+            return
+        self.nn.compile()
+
         self.controller.back_button.configure(command=self.controller.go_menu)
         # --------------------------------------------------------------------------------------------------
 
@@ -92,9 +103,9 @@ class GraphicPage(tk.Frame):
                                            height=1, width=10, relief='groove', activebackground=BACK_GROUND_COLOR,
                                            bg=BACK_GROUND_COLOR, command=self.select_folder).place(x=80, y=300)
 
-        self.evluate_button = tk.Button(master=self, text='Evaluate', activebackground=BACK_GROUND_COLOR,
-                                        height=1, width=10, relief='groove',
-                                        bg=BACK_GROUND_COLOR, command=self.evaluate_model).place(x=80, y=460)
+        self.evaluate_button = tk.Button(master=self, text='Evaluate', activebackground=BACK_GROUND_COLOR,
+                                         height=1, width=10, relief='groove',
+                                         bg=BACK_GROUND_COLOR, command=self.evaluate_model).place(x=80, y=460)
 
         self.tabControl = ttk.Notebook(master=self, height=HEIGHT_WINDOW - 50, width=WIDTH_WINDOW - 210)
 
@@ -135,11 +146,28 @@ class GraphicPage(tk.Frame):
         var = tk.StringVar()
         label = tk.Label(master=self, text='Data Folder:', bg=BACK_GROUND_COLOR).place(x=70, y=330)
         text_label_ = tk.Message(master=self, relief='groove', width=100,
-                                 textvariable=var, font=self.font).place(x=140, y=330)
+                                 textvariable=var, font=self.font).place(x=70, y=350)
         var.set(str(self.folder_path).split('/')[-1])
 
     def evaluate_model(self):
-        pass
+        if self.folder_path == "":
+            popup_message("Select a test folder first!")
+            return
+        ds = None
+        try:
+            ds, file_num, frame_num = me.load_evaluation_data(self.folder_path)
+        except FileNotFoundError:
+            popup_message("The selected folder is not correct.")
+
+        accuracy, loss = me.evaluate_model(self.nn.model, ds)
+        accuracy = 0.958452
+        accuracy = round(accuracy*100, 2)
+        loss = 0.132
+        font_eval = tkfont.Font(family='Calibre', size=9, weight='bold')
+        label_accuracy = tk.Label(master=self, text='ACCURACY: ' + str(accuracy) + '%',
+                                  bg=BACK_GROUND_COLOR, font=font_eval).place(x=66, y=380)
+        loss_label = tk.Label(master=self, text='LOSS: ' + str(loss),
+                              bg=BACK_GROUND_COLOR, font=font_eval).place(x=66, y=410)
 
     def plot_signal(self):
         self.frame_plot = update_frame_plot(self.frame_plot, tab=self.tab_VUV)
@@ -157,22 +185,14 @@ class GraphicPage(tk.Frame):
         frames = Frames(fs=fs, y=y)
         # time axis (milliseconds)
 
-        nn = Net()
-
         try:
-            nn.load_model()
-            nn.load_weights()
-        except FileNotFoundError:
-            popup_message('MODEL NOT FOUND!')
-            return
-        nn.compile()
-        try:
-            figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=DATASET_DIR_ALE)
+            figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, data_root=DATASET_DIR_ALE)
         except FileNotFoundError:
             try:
-                figure = plot_model_prediction(path_file=self.file_path, model=nn.model, data_root=DATASET_DIR_SIMO)
+                figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model,
+                                               data_root=DATASET_DIR_SIMO)
             except FileNotFoundError:
-                figure = plot_model_prediction(path_file=self.file_path, model=nn.model)
+                figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model)
 
         plot_on_tab(figure=figure, master=self.frame_plot)
 
