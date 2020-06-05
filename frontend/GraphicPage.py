@@ -62,6 +62,7 @@ class GraphicPage(tk.Frame):
         self.folder_path = ""
         self.message_select_folder = tk.Message(master=self, relief='groove', width=100, bg=BACK_GROUND_COLOR)
         self.message_select_folder.place(x=70, y=350)
+        self.gender = None
 
         self.message_select_audio = tk.Message(master=self, relief='groove', width=100, bg=BACK_GROUND_COLOR)
         self.message_select_audio.place(x=70, y=75)
@@ -91,6 +92,16 @@ class GraphicPage(tk.Frame):
         self.upload_button = tk.Button(master=self, text='File Explorer',
                                        height=1, width=10, relief='groove', activebackground=BACK_GROUND_COLOR,
                                        bg=BACK_GROUND_COLOR, command=self.upload_file_audio).place(x=80, y=45)
+
+        self.label_male = tk.Label(master=self, text='Male', bg=BACK_GROUND_COLOR).place(x=80, y=100)
+        self.label_female = tk.Label(master=self, text='Female', bg=BACK_GROUND_COLOR).place(x=125, y=100)
+
+        s = ttk.Style()
+        s.configure('TRadiobutton', background=BACK_GROUND_COLOR)
+
+        self.radio_button_male = ttk.Radiobutton(master=self, command=self.select_male, value=1).place(x=85, y=120)
+        self.radio_button_female = ttk.Radiobutton(master=self, compound='top',
+                                                   command=self.select_female, value=2).place(x=132, y=122)
 
         self.plot_button = tk.Button(master=self, text='Plot', activebackground=BACK_GROUND_COLOR,
                                      height=1, width=10, relief='groove',
@@ -137,6 +148,12 @@ class GraphicPage(tk.Frame):
         self.tabControl.add(self.tab_hnr, text='st-hnr')
         self.tabControl.add(self.tab_energy, text='st-energy')
 
+    def select_male(self):
+        self.gender = 1
+
+    def select_female(self):
+        self.gender = 0
+
     def upload_file_audio(self):
         self.file_path = filedialog.askopenfilename(title="Select Audio File",
                                                     filetypes=(("wav files", "*.wav"), ("all files", "*.*")))
@@ -175,7 +192,13 @@ class GraphicPage(tk.Frame):
             error = str(err).split(':', 1)
             popup_message(error[0] + ':\n\n\n' + error[1], font=font_not_found, h=200, w=400)
             return
+
+        label_evaluating = tk.Label(master=self, text='Evaluating model on test...',
+                                  bg=BACK_GROUND_COLOR, font=font_eval)
+        label_evaluating.place(x=80, y=400)
+
         accuracy, loss = me.evaluate_model(self.nn.model, ds)
+        label_evaluating.destroy()
         accuracy = round(accuracy * 100, 2)
         loss = round(loss, 2)
 
@@ -194,20 +217,23 @@ class GraphicPage(tk.Frame):
         if self.file_path == "":
             popup_message("Upload The file first!", font=self.font_pop)
             return
+        if self.gender is None:
+            popup_message("Select the gender first!", font=self.font_pop)
+            return
 
         # read wav file
         y, fs = librosa.load(self.file_path)
         frames = Frames(fs=fs, y=y)
         # time axis (milliseconds)
-
+        print(self.gender)
         try:
-            figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, data_root=DATASET_DIR_ALE)
-        except FileNotFoundError:
+            figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender, data_root=DATASET_DIR_ALE)
+        except (FileNotFoundError, IndexError):
             try:
-                figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model,
+                figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender,
                                                data_root=DATASET_DIR_SIMO)
-            except FileNotFoundError:
-                figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model)
+            except (FileNotFoundError, IndexError):
+                figure = plot_model_prediction(path_file=self.file_path, model=self.nn.model, gender=self.gender)
 
         plot_on_tab(figure=figure, master=self.frame_plot)
 
