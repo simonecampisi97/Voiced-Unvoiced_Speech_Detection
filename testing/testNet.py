@@ -51,10 +51,6 @@ def visualizeNN(model, input_shape):
     weights_list = []
     for layer in model.layers:
         weights = layer.get_weights()[0]
-        curr_max = np.max(np.abs(np.array(weights)))
-        for i in range(len(weights)):
-            for j in range(len(weights[i])):
-                weights[i][j] = weights[i][j] / curr_max
         weights_list.append(weights)
 
     feature_name = ['E', 'MG', 'ZRC', 'MFCC\n(1)', 'MFCC\n(2)', 'MFCC\n(3)', 'MFCC\n(4)', 'MFCC\n(5)', 'MFCC\n(6)', 'MFCC\n(7)',

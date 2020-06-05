@@ -2,6 +2,7 @@
 # On top of that, I added support for showing weights (linewidth, colors, etc.)
 # Contributor: Jianzheng Liu
 # Contact: jzliu.100@gmail.com
+import copy
 
 from matplotlib import pyplot
 from math import cos, sin, atan
@@ -58,7 +59,7 @@ class Layer:
         else:
             return None
 
-    def __line_between_two_neurons(self, neuron1, neuron2, weight=0.4, textoverlaphandler=None):
+    def __line_between_two_neurons(self, neuron1, neuron2, weight=0.4, textoverlaphandler=None, real_weight=0.4):
         angle = atan((neuron2.x - neuron1.x) / float(neuron2.y - neuron1.y))
         x_adjustment = self.neuron_radius * sin(angle)
         y_adjustment = self.neuron_radius * cos(angle)
@@ -98,7 +99,7 @@ class Layer:
 
             # print("Label positions: ", "{:.2f}".format(txt_x_pos), "{:.2f}".format(txt_y_pos), "{:3.2f}".format(
             # weight))
-            a = pyplot.gca().text(txt_x_pos, txt_y_pos, "{:3.2f}".format(weight), size=8, ha='center')
+            a = pyplot.gca().text(txt_x_pos, txt_y_pos, "{:3.2f}".format(real_weight), size=8, ha='center')
             a.set_bbox(dict(facecolor='white', alpha=0))
             # print(a.get_bbox_patch().get_height())
 
@@ -106,7 +107,7 @@ class Layer:
                              (neuron1.y - y_adjustment, neuron2.y + y_adjustment), linewidth=linewidth, color=color)
         pyplot.gca().add_line(line)
 
-    def draw(self, layerType=0, weights=None, textoverlaphandler=None, input_label=None):
+    def draw(self, layerType=0, weights=None, textoverlaphandler=None, input_label=None, real_weights=None):
         j = 0  # index for neurons in this layer
         for k, neuron in enumerate(self.neurons):
             i = 0  # index for neurons in previous layer
@@ -114,7 +115,8 @@ class Layer:
             neuron.draw(self.neuron_radius, id=j + 1, label=neuron_label)
             if self.previous_layer:
                 for previous_layer_neuron in self.previous_layer.neurons:
-                    self.__line_between_two_neurons(neuron, previous_layer_neuron, weights[i, j], textoverlaphandler)
+                    self.__line_between_two_neurons(neuron, previous_layer_neuron, weights[i, j],
+                                                    textoverlaphandler, real_weight=real_weights[i, j])
                     i = i + 1
             j = j + 1
 
@@ -165,7 +167,7 @@ class NeuralNetwork:
         layer = Layer(self, number_of_neurons, self.number_of_neurons_in_widest_layer)
         self.layers.append(layer)
 
-    def draw(self, weights_list=None, input_label=None):
+    def draw(self, weights_list=None, input_label=None, real_weights_list=None):
         # vertical_distance_between_layers and horizontal_distance_between_neurons are the same with the variables of
         # the same name in layer class
         vertical_distance_between_layers = 6
@@ -180,9 +182,13 @@ class NeuralNetwork:
             if i == 0:
                 layer.draw(layerType=0, input_label=input_label)
             elif i == len(self.layers) - 1:
-                layer.draw(layerType=-1, weights=weights_list[i - 1], textoverlaphandler=overlaphandler)
+                layer.draw(layerType=-1, weights=weights_list[i - 1],
+                           textoverlaphandler=overlaphandler,
+                           real_weights=real_weights_list[i - 1])
             else:
-                layer.draw(layerType=i, weights=weights_list[i - 1], textoverlaphandler=overlaphandler)
+                layer.draw(layerType=i, weights=weights_list[i - 1],
+                           textoverlaphandler=overlaphandler,
+                           real_weights=real_weights_list[i - 1])
 
         pyplot.axis('scaled')
         pyplot.axis('off')
@@ -201,6 +207,8 @@ class DrawNN:
         self.input_label = input_label
         self.neural_network = neural_network
         self.weights_list = weights_list
+        self.weights_list_normalized = self.normalize_weights()
+
         # if weights_list is none, then create a uniform list to fill the weights_list
         if weights_list is None:
             weights_list = []
@@ -210,9 +218,21 @@ class DrawNN:
                 weights_list.append(tempArr)
             self.weights_list = weights_list
 
+    def normalize_weights(self):
+        normalized_weights = copy.deepcopy(self.weights_list)
+
+        for layer_id in range(len(normalized_weights)):
+            curr_max = np.max(np.abs(np.array(normalized_weights[layer_id])))
+
+            for i in range(len(normalized_weights[layer_id])):
+                for j in range(len(normalized_weights[layer_id][i])):
+                    normalized_weights[layer_id][i][j] = normalized_weights[layer_id][i][j] / curr_max
+
+        return normalized_weights
+
     def draw(self):
         widest_layer = max(self.neural_network)
         network = NeuralNetwork(widest_layer)
         for l in self.neural_network:
             network.add_layer(l)
-        network.draw(self.weights_list, self.input_label)
+        network.draw(self.weights_list_normalized, self.input_label, self.weights_list)
