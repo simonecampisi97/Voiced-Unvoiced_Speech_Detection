@@ -7,6 +7,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import EarlyStopping
+from tqdm import tqdm
 
 from DataLoader import DataLoader
 from DataSet import DataSet
@@ -54,10 +55,11 @@ if __name__ == "__main__":
     es_callback = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
 
     for h_size in size_hidden_layer:
-        print("Size:", h_size, "\n")
+        print("Size:", h_size, "\n", flush=True)
+        time.sleep(.01)
 
         l = []
-        for _ in range(10):
+        for _ in tqdm(range(10)):
             nn = Net(inputSize=ds.features.shape[1], hiddenSize=h_size)
             nn.compile()
             nn.model.fit(X_train, y_train, batch_size=512, epochs=20, validation_data=(X_val, y_val),
