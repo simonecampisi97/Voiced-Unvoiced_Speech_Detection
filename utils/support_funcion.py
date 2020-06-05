@@ -6,6 +6,7 @@ import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
+import utils.VisualizeNN as VisNN
 
 import DataLoader
 from Frames import Frames
@@ -65,7 +66,7 @@ def plot_pitches_prediction(time, frames, pitches, prediction, ax):
 # compute the class prediction given the path of the new file audio,
 # the path of dataset (if is available)
 # and plot the results
-def plot_model_prediction(path_file, model,  gender, data_root=None):
+def plot_model_prediction(path_file, model, gender, data_root=None):
     figure = plt.Figure(figsize=(9, 6), dpi=90)
     figure.suptitle('VUV predicion', fontsize=15)
     if data_root is not None:
@@ -127,3 +128,25 @@ def butter_highpass_filter(data, cutoff, fs, order=4):
     b, a = butter_highpass(cutoff, fs, order=order)
     y = signal.filtfilt(b, a, data)
     return y
+
+
+def visualizeNN(model, input_shape):
+
+    network_structure = [[input_shape]]
+
+    for layer in model.layers:
+        network_structure.append([layer.output_shape[1]])
+
+    network_structure = np.concatenate(network_structure)
+
+    weights_list = []
+    for layer in model.layers:
+        weights = layer.get_weights()[0]
+        weights_list.append(weights)
+
+    feature_name = ['E', 'MG', 'ZRC', 'MFCC\n(1)', 'MFCC\n(2)', 'MFCC\n(3)', 'MFCC\n(4)', 'MFCC\n(5)', 'MFCC\n(6)',
+                    'MFCC\n(7)',
+                    'MFCC\n(8)', 'MFCC\n(9)', 'MFCC\n(10)', 'MFCC\n(11)', 'MFCC\n(12)', 'MFCC\n(13)', 'FEMALE', 'MALE']
+
+    network = VisNN.DrawNN(network_structure, weights_list, feature_name)
+    network.draw()
