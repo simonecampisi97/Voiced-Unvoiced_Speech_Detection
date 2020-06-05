@@ -11,7 +11,6 @@ from Net import Net
 import ParametersExtraction as pe
 from utils.support_funcion import plot_result, plot_model_prediction, visualizeNN
 import utils.model_evaluation as me
-
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
