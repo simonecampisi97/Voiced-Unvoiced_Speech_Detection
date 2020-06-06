@@ -39,27 +39,7 @@ def plot_history(history):
     plt.legend(['Train', 'Val'], loc='upper left')
     plt.show()
 
-'''
-def visualizeNN(model, input_shape):
-    network_structure = [[input_shape]]
 
-    for layer in model.layers:
-        network_structure.append([layer.output_shape[1]])
-
-    network_structure = np.concatenate(network_structure)
-
-    weights_list = []
-    for layer in model.layers:
-        weights = layer.get_weights()[0]
-        weights_list.append(weights)
-
-    feature_name = ['E', 'MG', 'ZRC', 'MFCC\n(1)', 'MFCC\n(2)', 'MFCC\n(3)', 'MFCC\n(4)', 'MFCC\n(5)', 'MFCC\n(6)', 'MFCC\n(7)',
-                    'MFCC\n(8)', 'MFCC\n(9)', 'MFCC\n(10)', 'MFCC\n(11)', 'MFCC\n(12)', 'MFCC\n(13)', 'FEMALE', 'MALE']
-
-    network = VisNN.DrawNN(network_structure, weights_list, feature_name)
-    network.draw()
-
-'''
 if __name__ == "__main__":
     dataset_dir_simo = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
     dataset_dir_ale = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
@@ -107,11 +87,5 @@ if __name__ == "__main__":
     end = time.time()
     print("--- %s seconds ---" % (end - start))
 
-    # test_loss, test_acc = nn.model.evaluate(X_test, y_test, verbose=0)
-    # print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))
-
-    # test on single file
-
-    # ---------------------------------
-    # VISUALIZE NN
-    visualizeNN(nn.model, 18)
+    test_loss, test_acc = nn.model.evaluate(X_test, y_test, verbose=0)
+    print('Test accuracy: %.3f, Test loss: %.3f' % (test_acc, test_loss))

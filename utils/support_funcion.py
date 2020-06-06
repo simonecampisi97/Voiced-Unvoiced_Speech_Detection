@@ -108,13 +108,16 @@ def plot_model_prediction(path_file, model, gender, data_root=None):
 
 
 # Standardizing the data
-def standardize_dataset(X):
-    dataset_mean = np.mean(X, axis=0)  # Computing the dataset mean
-    dataset_std = np.std(X, axis=0)  # Computing the dataset standard deviation
+def standardize_dataset(X, mean=None, std=None):
+    if mean is None:
+        mean = np.mean(X, axis=0)  # Computing the dataset mean
 
-    X_std = (X - dataset_mean) / dataset_std
+    if std is None:
+        std = np.std(X, axis=0)  # Computing the dataset standard deviation
 
-    return X_std, dataset_std, dataset_std
+    X_std = (X - mean) / std
+
+    return X_std, mean, std
 
 
 def butter_highpass(cutoff, fs, order=4):
