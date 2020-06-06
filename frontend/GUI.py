@@ -7,6 +7,7 @@ from frontend.NeuralNetworkPage import NeuralNetworkPage
 from frontend.Settings import *
 
 
+
 class App(tk.Tk):
 
     def __init__(self, *args, **kwargs):
@@ -56,12 +57,14 @@ class App(tk.Tk):
         self.button_graphics_img = tk.PhotoImage(file='frontend/icons/graphic.png')
         self.button_graphic = tk.Button(master=self.menu_frame, relief='flat', activebackground=SIDE_BAR_COLOR,
                                         image=self.button_graphics_img, height=25, width=25, bg=MENU_COLOR,
-                                        command=lambda: self.show_frame("GraphicPage")).place(x=10, y=120)
+                                        command=lambda: self.show_frame("GraphicPage"))
+        self.button_graphic.place(x=10, y=120)
 
         self.neural_img = tk.PhotoImage(file='frontend/icons/neural.png')
         self.button_neural = tk.Button(master=self.menu_frame, relief='flat', activebackground=SIDE_BAR_COLOR,
                                        image=self.neural_img, height=25, width=25, bg=MENU_COLOR,
-                                       command=lambda: self.show_frame("NeuralNetworkPage")).place(x=10, y=180)
+                                       command=lambda: self.show_frame("NeuralNetworkPage"))
+        self.button_neural.place(x=10, y=180)
 
         self.frames = {}
         for F in (HomePage, GraphicPage, NeuralNetworkPage):
