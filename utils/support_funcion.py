@@ -130,8 +130,7 @@ def butter_highpass_filter(data, cutoff, fs, order=4):
     return y
 
 
-def visualizeNN(model, input_shape):
-
+def visualizeNN(ax,model, input_shape):
     network_structure = [[input_shape]]
 
     for layer in model.layers:
@@ -149,4 +148,5 @@ def visualizeNN(model, input_shape):
                     'MFCC\n(8)', 'MFCC\n(9)', 'MFCC\n(10)', 'MFCC\n(11)', 'MFCC\n(12)', 'MFCC\n(13)', 'FEMALE', 'MALE']
 
     network = VisNN.DrawNN(network_structure, weights_list, feature_name)
-    network.draw()
+    network.draw(ax=ax)
+

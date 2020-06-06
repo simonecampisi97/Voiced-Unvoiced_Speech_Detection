@@ -39,7 +39,7 @@ def plot_history(history):
     plt.legend(['Train', 'Val'], loc='upper left')
     plt.show()
 
-
+'''
 def visualizeNN(model, input_shape):
     network_structure = [[input_shape]]
 
@@ -59,7 +59,7 @@ def visualizeNN(model, input_shape):
     network = VisNN.DrawNN(network_structure, weights_list, feature_name)
     network.draw()
 
-
+'''
 if __name__ == "__main__":
     dataset_dir_simo = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
     dataset_dir_ale = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
