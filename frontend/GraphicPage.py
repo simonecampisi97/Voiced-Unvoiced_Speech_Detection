@@ -11,11 +11,12 @@ from Net import Net
 import ParametersExtraction as pe
 from utils.support_funcion import plot_result, plot_model_prediction, visualizeNN
 import utils.model_evaluation as me
+
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
-DATASET_DIR_SIMO = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
-DATASET_DIR_ALE = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\SPEECH DATA"
+DATASET_DIR_SIMO = "C:\\Users\\simoc\\Documents\\SPEECH_DATA_ZIPPED\\TEST"
+DATASET_DIR_ALE = "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\TEST"
 
 
 def popup_message(msg, font, w=250, h=150):
@@ -80,7 +81,6 @@ class GraphicPage(tk.Frame):
             return
         self.nn.compile()
 
-        self.controller.back_button.configure(command=self.controller.go_menu)
         # --------------------------------------------------------------------------------------------------
 
         self.upload_frame = tk.LabelFrame(master=self, text='Upload File Audio', font=self.font_label, height=150,
@@ -141,16 +141,12 @@ class GraphicPage(tk.Frame):
         self.tab_energy = ttk.Frame(self.tabControl)
         self.frame_plot5 = create_frame_plot(tab=self.tab_energy)
 
-        self.tab_nn = ttk.Frame(self.tabControl)
-        self.frame_plot6 = create_frame_plot(tab=self.tab_nn)
-
         self.tabControl.place(x=200, y=20)
         self.tabControl.add(self.tab_VUV, text='VUV')
         self.tabControl.add(self.tab_zcr, text='st-zcr')
         self.tabControl.add(self.tab_mag, text='st-magnitude')
         self.tabControl.add(self.tab_hnr, text='st-hnr')
         self.tabControl.add(self.tab_energy, text='st-energy')
-        self.tabControl.add(self.tab_nn, text='Neural Network')
 
     def select_male(self):
         self.gender = 1
@@ -214,7 +210,6 @@ class GraphicPage(tk.Frame):
         self.frame_plot3 = update_frame_plot(self.frame_plot3, tab=self.tab_mag)
         self.frame_plot4 = update_frame_plot(self.frame_plot4, tab=self.tab_hnr)
         self.frame_plot5 = update_frame_plot(self.frame_plot5, tab=self.tab_energy)
-        self.frame_plot6 = update_frame_plot(self.frame_plot6, tab=self.tab_nn)
 
         if self.file_path == "":
             popup_message("Upload The file first!", font=self.font_pop)
@@ -275,8 +270,3 @@ class GraphicPage(tk.Frame):
         energy = pe.st_energy(frames)
         plot_result(signal=energy, Frames=frames, ax=ax5)
         plot_on_tab(figure=figure5, master=self.frame_plot5)
-
-        figure6 = plt.Figure(figsize=(9, 5), dpi=90)
-        plt.subplot(111)
-        visualizeNN(self.nn.model, 18)
-

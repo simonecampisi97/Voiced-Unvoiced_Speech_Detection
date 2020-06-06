@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import signal
 import utils.VisualizeNN as VisNN
+from sklearn.metrics import accuracy_score
 
 import DataLoader
 from Frames import Frames
@@ -47,6 +48,7 @@ def get_pitch(absolute_audio_path, root):
         gender = 'FEMALE'
 
     path_ref = os.path.join(root, gender, 'REF', filename_splitted[1], filename_ref)
+    print(path_ref)
 
     with open(path_ref) as f:
         pitches = [(line.rstrip().split(" ")[0]) for line in f]
@@ -56,7 +58,8 @@ def get_pitch(absolute_audio_path, root):
 
 def plot_pitches_prediction(time, frames, pitches, prediction, ax):
     f0_time = []
-    for i in range(len(frames.windowed_frames[:-3])):
+    diff = len(frames.windowed_frames) - len(pitches)
+    for i in range(len(frames.windowed_frames[:-diff])):
         f0_time.append((i * frames.shift_length + 1) * 1000 / frames.fs)
     ax.plot(f0_time, pitches, label='Pitches')
 
@@ -67,19 +70,28 @@ def plot_pitches_prediction(time, frames, pitches, prediction, ax):
 # the path of dataset (if is available)
 # and plot the results
 def plot_model_prediction(path_file, model, gender, data_root=None):
-    figure = plt.Figure(figsize=(9, 6), dpi=90)
-    figure.suptitle('VUV predicion', fontsize=15)
-    if data_root is not None:
-        ax_1 = figure.add_subplot(211)
-    else:
-        ax_1 = figure.add_subplot(111)
-
     y, fs = librosa.core.load(path_file, sr=48000)
     frames = Frames(y=y, fs=fs)
-
     new_data = DataLoader.features_extraction(fs, y, gender_id=gender)
+
+    figure = plt.Figure(figsize=(9, 6), dpi=90)
+
     prediction = model.predict_classes(new_data)
     prediction = prediction.reshape((-1,))
+
+    if data_root is not None:
+
+        ax_1 = figure.add_subplot(211)
+        y_ref = get_pitch(path_file, data_root)
+        y_ref[y_ref > 0] = 1.
+        diff = len(frames.windowed_frames) - len(y_ref)
+        prediction = prediction[:-diff]
+
+        accuracy = round(accuracy_score(y_ref, prediction)*100)
+        figure.suptitle('VUV predicion- Accuracy:{}%'.format(accuracy), fontsize=15)
+    else:
+        figure.suptitle('VUV predicion', fontsize=15)
+        ax_1 = figure.add_subplot(111)
 
     time = np.arange(len(y)) * 1000 / fs
     plot_segments(time, frames, prediction, ax=ax_1)
@@ -108,13 +120,16 @@ def plot_model_prediction(path_file, model, gender, data_root=None):
 
 
 # Standardizing the data
-def standardize_dataset(X):
-    dataset_mean = np.mean(X, axis=0)  # Computing the dataset mean
-    dataset_std = np.std(X, axis=0)  # Computing the dataset standard deviation
+def standardize_dataset(X, mean=None, std=None):
+    if mean is None:
+        mean = np.mean(X, axis=0)  # Computing the dataset mean
 
-    X_std = (X - dataset_mean) / dataset_std
+    if std is None:
+        std = np.std(X, axis=0)  # Computing the dataset standard deviation
 
-    return X_std, dataset_std, dataset_std
+    X_std = (X - mean) / std
+
+    return X_std, mean, std
 
 
 def butter_highpass(cutoff, fs, order=4):
@@ -130,8 +145,7 @@ def butter_highpass_filter(data, cutoff, fs, order=4):
     return y
 
 
-def visualizeNN(model, input_shape):
-
+def visualizeNN(ax, model, input_shape):
     network_structure = [[input_shape]]
 
     for layer in model.layers:
@@ -149,4 +163,4 @@ def visualizeNN(model, input_shape):
                     'MFCC\n(8)', 'MFCC\n(9)', 'MFCC\n(10)', 'MFCC\n(11)', 'MFCC\n(12)', 'MFCC\n(13)', 'FEMALE', 'MALE']
 
     network = VisNN.DrawNN(network_structure, weights_list, feature_name)
-    network.draw()
+    network.draw(ax=ax)

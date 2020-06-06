@@ -1,10 +1,11 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from tkinter import font as tkfont
 from frontend.HomePage import HomePage
 from frontend.GraphicPage import GraphicPage
-from frontend.MenuPage import MenuPage
-from frontend.TrainTestPage import TrainTest
+from frontend.NeuralNetworkPage import NeuralNetworkPage
 from frontend.Settings import *
+
 
 
 class App(tk.Tk):
@@ -35,31 +36,38 @@ class App(tk.Tk):
                                         highlightcolor="black", highlightthickness=1,
                                         bg=SIDE_BAR_COLOR).place(x=0, y=0)
 
-        # Menu Button
-        self.menu_img = tk.PhotoImage(file='frontend/icons/menu.png')
-        self.menu_button = tk.Button(master=self.menu_frame, image=self.menu_img,
-                                     height=25, width=25, relief='flat', bg=SIDE_BAR_COLOR,
-                                     command=lambda: self.show_frame("MenuPage"), activebackground=SIDE_BAR_COLOR)
-        self.menu_button.place(x=10, y=10)
-
-        # Back Button
-        self.back_img = tk.PhotoImage(file='frontend/icons/back.png')
-
-        self.back_button = tk.Button(master=self.menu_frame, image=self.back_img, height=25, width=25,
-                                     bg=SIDE_BAR_COLOR, relief='flat',
-                                     command=lambda: self.show_frame("HomePage"), activebackground=SIDE_BAR_COLOR)
-        self.back_button.place(x=10, y=46)
-
         # Home Button
         self.home_img = tk.PhotoImage(file='frontend/icons/home.png')
         self.home_button = tk.Button(master=self.menu_frame, image=self.home_img, height=25, width=25,
                                      bg=SIDE_BAR_COLOR, command=self.go_home, activebackground=SIDE_BAR_COLOR,
                                      relief='flat')
 
-        self.home_button.place(x=10, y=82)
-        self.frames = {}
+        self.home_button.place(x=10, y=15)
+        # Back Button
+        self.back_img = tk.PhotoImage(file='frontend/icons/back.png')
 
-        for F in (HomePage, MenuPage, GraphicPage, TrainTest):
+        self.back_button = tk.Button(master=self.menu_frame, image=self.back_img, height=25, width=25,
+                                     bg=SIDE_BAR_COLOR, relief='flat',
+                                     command=lambda: self.show_frame("HomePage"), activebackground=SIDE_BAR_COLOR)
+        self.back_button.place(x=10, y=56)
+        s = ttk.Style()
+        s.configure('TSeparator', foreground='black', background='black')
+        self.separator = ttk.Separator(master=self.menu_frame, orient=tk.HORIZONTAL).place(x=0.3, y=100, relwidth=0.05)
+
+        self.button_graphics_img = tk.PhotoImage(file='frontend/icons/graphic.png')
+        self.button_graphic = tk.Button(master=self.menu_frame, relief='flat', activebackground=SIDE_BAR_COLOR,
+                                        image=self.button_graphics_img, height=25, width=25, bg=MENU_COLOR,
+                                        command=lambda: self.show_frame("GraphicPage"))
+        self.button_graphic.place(x=10, y=120)
+
+        self.neural_img = tk.PhotoImage(file='frontend/icons/neural.png')
+        self.button_neural = tk.Button(master=self.menu_frame, relief='flat', activebackground=SIDE_BAR_COLOR,
+                                       image=self.neural_img, height=25, width=25, bg=MENU_COLOR,
+                                       command=lambda: self.show_frame("NeuralNetworkPage"))
+        self.button_neural.place(x=10, y=180)
+
+        self.frames = {}
+        for F in (HomePage, GraphicPage, NeuralNetworkPage):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -79,6 +87,3 @@ class App(tk.Tk):
 
     def go_home(self):
         self.show_frame('HomePage')
-
-    def go_menu(self):
-        self.show_frame('MenuPage')

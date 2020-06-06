@@ -2,7 +2,7 @@ import sys
 
 import numpy as np
 from tqdm import tqdm
-
+import utils.support_funcion as sf
 from DataLoader import DataLoader
 
 
@@ -12,6 +12,10 @@ class DataSet:
         self.labels = []
         self.features = []
         self.size = 0
+
+        # standardization data
+        self.mean = 1
+        self.std  = 1
 
         sys.stdout.flush()
 
@@ -38,3 +42,8 @@ class DataSet:
 
         print("\t-Label shape:  ", self.labels.shape)
         print("\t-Feature shape:", self.features.shape)
+
+    def standardize(self):
+        self.features, mean, std = sf.standardize_dataset(self.features)
+        self.mean = mean
+        self.std = std

@@ -12,7 +12,6 @@ def st_zcr(frames: Frames):
     # matrix where the rows contains contiguous slice
     for frame_w in frames.windowed_frames:
         st_zcr_.append(np.sum(abs(np.diff(np.sign(frame_w - np.mean(frame_w))))) / (2 * frames.frame_length))
-    plt.show()
 
     return np.array(st_zcr_)
 
