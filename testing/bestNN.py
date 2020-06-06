@@ -42,8 +42,8 @@ if __name__ == "__main__":
         "C:\\Users\\carot\\Documents\\SPEECH_DATA_ZIPPED\\TEST")
     print()
     print('Train:', X_train.shape)
-    print('Val: ', X_val.shape)
-    print('Test:', test_set.features.shape)
+    print('Val:  ', X_val.shape)
+    print('Test: ', test_set.features.shape)
     print()
 
     size_hidden_layer = [10, 15, 20, 25, 30, 35, 40]
