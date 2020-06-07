@@ -50,7 +50,7 @@ class App(tk.Tk):
         self.back_button = tk.Button(master=self.menu_frame, image=self.back_img, height=25, width=25,
                                      bg=SIDE_BAR_COLOR, relief='flat',
                                      command=lambda: self.show_frame("HomePage"), activebackground=SIDE_BAR_COLOR)
-        self.tooltip_back = ToolTip(self.back_button, 'Come back to \n previous page')
+        self.tooltip_back = ToolTip(self.back_button, 'Back')
         self.back_button.place(x=10, y=56)
         s = ttk.Style()
         s.configure('TSeparator', foreground='black', background='black')
@@ -60,8 +60,8 @@ class App(tk.Tk):
         self.button_graphic = tk.Button(master=self.menu_frame, relief='flat', activebackground=SIDE_BAR_COLOR,
                                         image=self.button_graphics_img, height=25, width=25, bg=MENU_COLOR,
                                         command=lambda: self.show_frame("GraphicPage"))
-        self.tooltip_graphic = ToolTip(self.button_graphic, 'Plot results')
-        self.button_graphic.place(x=10, y=120)
+        self.tooltip_graphic = ToolTip(self.button_graphic, 'Plot Results and\nModel Evaluation')
+        self.button_graphic.place(x=10, y=127)
 
         self.neural_img = tk.PhotoImage(file='frontend/icons/neural.png')
         self.button_neural = tk.Button(master=self.menu_frame, relief='flat', activebackground=SIDE_BAR_COLOR,
