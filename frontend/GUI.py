@@ -12,7 +12,7 @@ class App(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-        self.title('VOICED/UNVOICED SPEECH DETECTION')
+        self.title('VUV SPEECH DETECTION')
         self.resizable(RESIZABLE, RESIZABLE)
         self.geometry(str(WIDTH_WINDOW) + 'x' + str(HEIGHT_WINDOW))
         self.configure(bg=BACK_GROUND_COLOR)
