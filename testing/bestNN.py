@@ -1,6 +1,7 @@
 import time
 import os
 import numpy as np
+from time import localtime, strftime
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -30,6 +31,8 @@ if __name__ == "__main__":
         ds = DataSet(dl)
         save_var(ds, "dataset.save")
 
+    d
+
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
     session = tf.compat.v1.Session(config=config)
@@ -46,7 +49,7 @@ if __name__ == "__main__":
     print('Test: ', test_set.features.shape)
     print()
 
-    size_hidden_layer = [10, 15, 20, 25, 30, 35, 40]
+    size_hidden_layer = [15, 20, 25, 30, 35]
 
     accuracy_list = []
     h_size = 0
@@ -70,6 +73,26 @@ if __name__ == "__main__":
         accuracy_list.append(l)
         print("__________________________________________________")
 
+    saveName = 'ANN_' + strftime("%Y%m%d_%H%M%S", localtime()) + '.txt'
+    f = open(saveName, 'w')
+    stats = []
+
     for i, l in enumerate(accuracy_list):
-        print("h_size={} Avg:{:.3f}  -  Max:{:.3f}  -  Min:{:.3f}".format(size_hidden_layer[i],
-                                                                          np.mean(l), np.max(l), np.min(l)))
+        stats.append([np.mean(l), np.max(l), np.min(l)])
+        s = ("h_size={} Avg:{:.5f}  -  Max:{:.5f}  -  Min:{:.5f}".format(size_hidden_layer[i],
+                                                                         np.mean(l), np.max(l), np.min(l)))
+        print(s)
+        f.write(s + "\n")
+
+    stats = np.array(stats)
+    best_mean = np.amax(stats[:, 0])
+    best_max = np.amax(stats[:, 1])
+    best_min = np.amax(stats[:, 2])
+
+    f.write("\n\n"
+            "Best mean:{}  size:{}\n"
+            "Best max:{}   size:{}\n"
+            "Best min:{}   size:{}\n".format(stats[best_mean, 0], best_mean, stats[best_max, 1], best_max,
+                                             stats[best_min, 2], best_min))
+
+    f.close()
