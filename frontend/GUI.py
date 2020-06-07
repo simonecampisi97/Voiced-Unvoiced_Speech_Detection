@@ -5,7 +5,7 @@ from frontend.HomePage import HomePage
 from frontend.GraphicPage import GraphicPage
 from frontend.NeuralNetworkPage import NeuralNetworkPage
 from frontend.Settings import *
-
+from frontend.Tooltip import ToolTip
 
 
 class App(tk.Tk):
@@ -41,6 +41,7 @@ class App(tk.Tk):
         self.home_button = tk.Button(master=self.menu_frame, image=self.home_img, height=25, width=25,
                                      bg=SIDE_BAR_COLOR, command=self.go_home, activebackground=SIDE_BAR_COLOR,
                                      relief='flat')
+        self.tooltip_home = ToolTip(self.home_button, 'Home Page')
 
         self.home_button.place(x=10, y=15)
         # Back Button
@@ -49,6 +50,7 @@ class App(tk.Tk):
         self.back_button = tk.Button(master=self.menu_frame, image=self.back_img, height=25, width=25,
                                      bg=SIDE_BAR_COLOR, relief='flat',
                                      command=lambda: self.show_frame("HomePage"), activebackground=SIDE_BAR_COLOR)
+        self.tooltip_back = ToolTip(self.back_button, 'Come back to \n previous page')
         self.back_button.place(x=10, y=56)
         s = ttk.Style()
         s.configure('TSeparator', foreground='black', background='black')
@@ -58,12 +60,14 @@ class App(tk.Tk):
         self.button_graphic = tk.Button(master=self.menu_frame, relief='flat', activebackground=SIDE_BAR_COLOR,
                                         image=self.button_graphics_img, height=25, width=25, bg=MENU_COLOR,
                                         command=lambda: self.show_frame("GraphicPage"))
+        self.tooltip_graphic = ToolTip(self.button_graphic, 'Plot results')
         self.button_graphic.place(x=10, y=120)
 
         self.neural_img = tk.PhotoImage(file='frontend/icons/neural.png')
         self.button_neural = tk.Button(master=self.menu_frame, relief='flat', activebackground=SIDE_BAR_COLOR,
                                        image=self.neural_img, height=25, width=25, bg=MENU_COLOR,
                                        command=lambda: self.show_frame("NeuralNetworkPage"))
+        self.tooltip_neural = ToolTip(self.button_neural, 'Neural Network Architecture')
         self.button_neural.place(x=10, y=180)
 
         self.frames = {}
