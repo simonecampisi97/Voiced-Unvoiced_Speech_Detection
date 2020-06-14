@@ -11,10 +11,8 @@ WEIGHTS_PATH = "saved_model/model.h5"
 class Net:
 
     def __init__(self, inputSize=18, outputSize=1, hiddenSize=16):
-        self.hiddenSize = 3
 
-        self.model = Sequential([InputLayer(input_shape=(inputSize,)),
-                                 Dense(hiddenSize, activation="relu"),
+        self.model = Sequential([Dense(hiddenSize, input_shape=(inputSize,), activation="relu"),
                                  Dense(outputSize, activation="sigmoid")])
 
     def compile(self, optimizer='adam', loss='binary_crossentropy', metrics=None):

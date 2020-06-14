@@ -71,15 +71,13 @@ class GraphicPage(tk.Frame):
         self.font = tkfont.Font(family='Helvetica', size=7)
         self.font_pop = tkfont.Font(family='arial black', size=20, weight="bold")
 
-        self.nn = Net()
-
         try:
-            self.nn.load_model()
+            self.nn = Net()
             self.nn.load_weights()
+            self.nn.compile()
         except FileNotFoundError:
             popup_message('MODEL NOT FOUND!', font=self.font_pop)
             return
-        self.nn.compile()
 
         # --------------------------------------------------------------------------------------------------
 

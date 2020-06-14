@@ -1,6 +1,9 @@
 import time
 import os
 import numpy as np
+import csv
+
+from utils.support_funcion import standardize_dataset
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -67,20 +70,46 @@ if __name__ == "__main__":
     print('Train:', X_train.shape)
     print('Test: ', X_test.shape)
 
+    X_train, mean, std = standardize_dataset(X_train)
+    X_test = standardize_dataset(X_test, mean, std)
+
+    if not os.path.exists('std'):
+        os.mkdir('std')
+        print('Directory std created')
+    else:
+        print('Directory std already exists')
+
+    with open('std/mean.csv', 'w') as csv_file:
+        file_writer = csv.writer(csv_file, delimiter=',',
+                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        file_writer.writerow(mean)
+
+    with open('std/std.csv', 'w') as csv_file:
+        file_writer = csv.writer(csv_file, delimiter=',',
+                                 quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        file_writer.writerow(std)
+
     nn = Net(inputSize=ds.features.shape[1])
     start = time.time()
 
     try:
-        nn.load_model()
+
         nn.load_weights()
         nn.compile()
-    except FileNotFoundError:
+    except (FileNotFoundError, OSError):
         nn.compile()
         # early stopping
         es_callback = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
 
         history = nn.model.fit(X_train, y_train, batch_size=512, epochs=20, validation_split=0.3,
                                verbose=2, callbacks=[es_callback])
+
+        if not os.path.exists('saved_model'):
+            os.mkdir('saved_model')
+            print('Directory saved_model created')
+        else:
+            print('Directory saved_model already exists')
+
         nn.serialize_model()
         nn.serialize_weights()
 

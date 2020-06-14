@@ -8,6 +8,7 @@ import numpy as np
 from scipy import signal
 import utils.VisualizeNN as VisNN
 from sklearn.metrics import accuracy_score
+import pandas
 
 import DataLoader
 from Frames import Frames
@@ -48,7 +49,6 @@ def get_pitch(absolute_audio_path, root):
         gender = 'FEMALE'
 
     path_ref = os.path.join(root, gender, 'REF', filename_splitted[1], filename_ref)
-    print(path_ref)
 
     with open(path_ref) as f:
         pitches = [(line.rstrip().split(" ")[0]) for line in f]
@@ -74,6 +74,10 @@ def plot_model_prediction(path_file, model, gender, data_root=None):
     frames = Frames(y=y, fs=fs)
     new_data = DataLoader.features_extraction(fs, y, gender_id=gender)
 
+    # stadardize new data
+    mean, std = read_std_from_csv('std')
+    new_data = standardize_dataset(new_data, mean, std)
+
     figure = plt.Figure(figsize=(9, 6), dpi=90)
 
     prediction = model.predict_classes(new_data)
@@ -87,7 +91,7 @@ def plot_model_prediction(path_file, model, gender, data_root=None):
         diff = len(frames.windowed_frames) - len(y_ref)
         prediction = prediction[:-diff]
 
-        accuracy = round(accuracy_score(y_ref, prediction)*100)
+        accuracy = round(accuracy_score(y_ref, prediction) * 100)
         figure.suptitle('VUV predicion- Accuracy:{}%'.format(accuracy), fontsize=15)
     else:
         figure.suptitle('VUV predicion', fontsize=15)
@@ -130,6 +134,14 @@ def standardize_dataset(X, mean=None, std=None):
     X_std = (X - mean) / std
 
     return X_std, mean, std
+
+
+def read_std_from_csv(folder_path):
+    mean = np.genfromtxt(os.path.join(folder_path, 'mean.csv'),
+                         delimiter=',')  # pandas.read_csv(os.path.join(folder_path, 'mean.csv'), sep=',').values
+
+    std = np.genfromtxt(os.path.join(folder_path, 'std.csv'), delimiter=',')
+    return mean, std
 
 
 def butter_highpass(cutoff, fs, order=4):

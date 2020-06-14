@@ -2,7 +2,7 @@ import librosa
 import matplotlib.pyplot as plt
 import numpy as np
 from Signal_Analysis.features.signal import get_HNR
-from utils.support_funcion import nextpow2
+import utils.support_funcion as sf
 
 from Frames import Frames
 
@@ -33,7 +33,7 @@ def st_energy(frames: Frames):
 
 
 def MFCC(signal, frames: Frames, n_mfcc=13):
-    n_fft = int(2 ** nextpow2(frames.frame_length))
+    n_fft = int(2 ** sf.nextpow2(frames.frame_length))
 
     mfcc = librosa.feature.mfcc(y=signal, sr=frames.fs, n_mfcc=n_mfcc, hop_length=frames.shift_length,
                                 htk=False, win_length=frames.frame_length, window=frames.window, n_fft=n_fft)
