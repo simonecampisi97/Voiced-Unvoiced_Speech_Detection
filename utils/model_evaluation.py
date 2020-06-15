@@ -4,6 +4,7 @@ from tensorflow.keras import Sequential
 
 from DataLoader import DataLoader
 from DataSet import DataSet
+import utils.support_funcion as sf
 
 
 def load_evaluation_data(evaluate_data_dir: str):
@@ -19,10 +20,11 @@ def load_evaluation_data(evaluate_data_dir: str):
 
 
 def evaluate_model(model: Sequential, testSet: DataSet, verbose=2):
-    results = model.evaluate(x=testSet.features, y=testSet.labels, batch_size=128, verbose=verbose)
+    mean, std = sf.read_std_from_csv('std')
+    test_std = sf.standardize_dataset(testSet.features, mean, std)
+    results = model.evaluate(x=test_std, y=testSet.labels, batch_size=128, verbose=verbose)
 
     accuracy = results[-1]
     loss = results[0]
 
     return accuracy, loss
-
