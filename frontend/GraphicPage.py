@@ -133,17 +133,13 @@ class GraphicPage(tk.Frame):
         self.tab_mag = ttk.Frame(self.tabControl)
         self.frame_plot3 = create_frame_plot(tab=self.tab_mag)
 
-        self.tab_hnr = ttk.Frame(self.tabControl)
-        self.frame_plot4 = create_frame_plot(tab=self.tab_hnr)
-
         self.tab_energy = ttk.Frame(self.tabControl)
-        self.frame_plot5 = create_frame_plot(tab=self.tab_energy)
+        self.frame_plot4 = create_frame_plot(tab=self.tab_energy)
 
         self.tabControl.place(x=200, y=20)
         self.tabControl.add(self.tab_VUV, text='VUV')
         self.tabControl.add(self.tab_zcr, text='st-zcr')
         self.tabControl.add(self.tab_mag, text='st-magnitude')
-        self.tabControl.add(self.tab_hnr, text='st-hnr')
         self.tabControl.add(self.tab_energy, text='st-energy')
 
     def select_male(self):
@@ -206,8 +202,7 @@ class GraphicPage(tk.Frame):
         self.frame_plot = update_frame_plot(self.frame_plot, tab=self.tab_VUV)
         self.frame_plot2 = update_frame_plot(self.frame_plot2, tab=self.tab_zcr)
         self.frame_plot3 = update_frame_plot(self.frame_plot3, tab=self.tab_mag)
-        self.frame_plot4 = update_frame_plot(self.frame_plot4, tab=self.tab_hnr)
-        self.frame_plot5 = update_frame_plot(self.frame_plot5, tab=self.tab_energy)
+        self.frame_plot4 = update_frame_plot(self.frame_plot4, tab=self.tab_energy)
 
         if self.file_path == "":
             popup_message("Upload The file first!", font=self.font_pop)
@@ -253,18 +248,9 @@ class GraphicPage(tk.Frame):
 
         figure4 = plt.Figure(figsize=(9, 5), dpi=90)
         ax4 = figure4.add_subplot(111)
-        ax4.set_title('Short-Time Harmonic-To-Noise Ratio', fontsize=20)
+        ax4.set_title('Short-Time Energy', fontsize=20)
         ax4.set_xlabel('frame_time')
-        ax4.set_ylabel('hnr')
-        hnr = pe.st_HNR(frames)
-        plot_result(signal=hnr, Frames=frames, ax=ax4)
-        plot_on_tab(figure=figure4, master=self.frame_plot4)
-
-        figure5 = plt.Figure(figsize=(9, 5), dpi=90)
-        ax5 = figure5.add_subplot(111)
-        ax5.set_title('Short-Time Energy', fontsize=20)
-        ax5.set_xlabel('frame_time')
-        ax5.set_ylabel('energy')
+        ax4.set_ylabel('energy')
         energy = pe.st_energy(frames)
-        plot_result(signal=energy, Frames=frames, ax=ax5)
-        plot_on_tab(figure=figure5, master=self.frame_plot5)
+        plot_result(signal=energy, Frames=frames, ax=ax4)
+        plot_on_tab(figure=figure4, master=self.frame_plot4)

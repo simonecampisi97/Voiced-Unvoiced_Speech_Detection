@@ -43,12 +43,3 @@ def MFCC(signal, frames: Frames, n_mfcc=13):
     mfcc_truncated = mfcc.T[:-diff]
 
     return mfcc_truncated.T
-
-
-def st_HNR(frames: Frames, time_step=0.01, silence_threshold=0.1):
-    hnr = []
-    for windowed_frame in frames.windowed_frames:
-        hnr.append(get_HNR(signal=windowed_frame, rate=frames.fs,
-                           time_step=time_step, silence_threshold=silence_threshold))
-
-    return np.array(hnr)
