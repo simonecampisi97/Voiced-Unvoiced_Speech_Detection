@@ -8,7 +8,6 @@ The model computes a binary classification, predicting voiced/unvoiced speech wi
 
 <b>Contributors:</b>
 <ul>
- <li><a href="https://github.com/AlessandroCaroti">Alessandro Caroti</a></li>
  <li><a href="https://github.com/simocampi">Simone Campisi</a></li>
- <li><a href="https://github.com/LazyRacc00n">Jacopo Dapueto</a></li>
+ <li><a href="https://github.com/AlessandroCaroti">Alessandro Caroti</a></li>
 </ul>
